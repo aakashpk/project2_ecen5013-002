@@ -23,7 +23,7 @@ ORDERED_OBJS += \
 "./third_party/FreeRTOS/Source/timers.obj" \
 "./third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/port.obj" \
 "./third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.obj" \
-"./third_party/FreeRTOS/Source/portable/MemMang/heap_2.obj" \
+"./third_party/FreeRTOS/Source/portable/MemMang/heap_4.obj" \
 "../driverlib.lib" \
 "../tm4c1292ncpdt.cmd" \
 $(GEN_CMDS__FLAG) \
@@ -176,8 +176,8 @@ project2-ecen5013.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "my_tasks.obj" "tm4c1292ncpdt_startup_ccs.obj" "uartstdio.obj" "driver\driverInit.obj" "third_party\FreeRTOS\Source\croutine.obj" "third_party\FreeRTOS\Source\event_groups.obj" "third_party\FreeRTOS\Source\list.obj" "third_party\FreeRTOS\Source\queue.obj" "third_party\FreeRTOS\Source\tasks.obj" "third_party\FreeRTOS\Source\timers.obj" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\port.obj" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\portasm.obj" "third_party\FreeRTOS\Source\portable\MemMang\heap_2.obj" 
-	-$(RM) "main.d" "my_tasks.d" "tm4c1292ncpdt_startup_ccs.d" "uartstdio.d" "driver\driverInit.d" "third_party\FreeRTOS\Source\croutine.d" "third_party\FreeRTOS\Source\event_groups.d" "third_party\FreeRTOS\Source\list.d" "third_party\FreeRTOS\Source\queue.d" "third_party\FreeRTOS\Source\tasks.d" "third_party\FreeRTOS\Source\timers.d" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\port.d" "third_party\FreeRTOS\Source\portable\MemMang\heap_2.d" 
+	-$(RM) "main.obj" "my_tasks.obj" "tm4c1292ncpdt_startup_ccs.obj" "uartstdio.obj" "driver\driverInit.obj" "third_party\FreeRTOS\Source\croutine.obj" "third_party\FreeRTOS\Source\event_groups.obj" "third_party\FreeRTOS\Source\list.obj" "third_party\FreeRTOS\Source\queue.obj" "third_party\FreeRTOS\Source\tasks.obj" "third_party\FreeRTOS\Source\timers.obj" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\port.obj" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\portasm.obj" "third_party\FreeRTOS\Source\portable\MemMang\heap_4.obj" 
+	-$(RM) "main.d" "my_tasks.d" "tm4c1292ncpdt_startup_ccs.d" "uartstdio.d" "driver\driverInit.d" "third_party\FreeRTOS\Source\croutine.d" "third_party\FreeRTOS\Source\event_groups.d" "third_party\FreeRTOS\Source\list.d" "third_party\FreeRTOS\Source\queue.d" "third_party\FreeRTOS\Source\tasks.d" "third_party\FreeRTOS\Source\timers.d" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\port.d" "third_party\FreeRTOS\Source\portable\MemMang\heap_4.d" 
 	-$(RM) "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\portasm.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
