@@ -66,6 +66,10 @@
  * See http://www.freertos.org/a00110.html.
  *----------------------------------------------------------*/
 
+#include "driver/leds.h"
+# include "driver/serial_interface.h"
+#include "driver/ethernet.h"
+
 #define configUSE_PREEMPTION                1
 #define configUSE_IDLE_HOOK                 0
 #define configUSE_TICK_HOOK                 0
@@ -81,6 +85,8 @@
 #define configUSE_MUTEXES                   1
 #define configUSE_RECURSIVE_MUTEXES         1
 #define configCHECK_FOR_STACK_OVERFLOW      2
+
+#define configUSE_COUNTING_SEMAPHORES       1
 
 #define configUSE_TIMERS                    1
 #define configTIMER_TASK_PRIORITY           3

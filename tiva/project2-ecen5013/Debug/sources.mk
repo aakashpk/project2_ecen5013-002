@@ -116,4 +116,8 @@ driver \
 third_party/FreeRTOS/Source \
 third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F \
 third_party/FreeRTOS/Source/portable/MemMang \
+third_party/FreeRTOS-Plus-TCP \
+third_party/FreeRTOS-Plus-TCP/portable/BufferManagement \
+third_party/FreeRTOS-Plus-TCP/portable/NetworkInterface/ARM_CM4F \
+third_party/FreeRTOS-Plus-TCP/protocols/Common \
 

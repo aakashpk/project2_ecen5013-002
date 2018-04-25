@@ -1,12 +1,4 @@
-#include "driver/driverInit.h"
-#include "priorities.h"
-
-#include "FreeRTOS.h"
-#include "task.h"
-#include "timers.h"
-#include "queue.h"
-
-#include "my_tasks.h"
+#include <project2_tasks.h>
 
 #define TASKSTACKSIZE        128         // Stack size in words
 
@@ -17,7 +9,7 @@ static TaskHandle_t xTask1 = NULL, xTask2 = NULL,xTask3 = NULL;
 
 TimerHandle_t xTimer1,xTimer2;
 
-uint8_t ui8led1Data=2;
+bool toggle=true;
 
 extern QueueHandle_t xQueue1;
 
@@ -25,12 +17,14 @@ extern QueueHandle_t xQueue1;
 void vTimer1Callback(TimerHandle_t xTimer)
 {
     if(xTaskNotify(xTask3,TOGGLE_LED,eSetValueWithOverwrite)!=pdTRUE)
-          UARTprintf("Notification not passed task 1\n");
+        UARTprintf("Notification not passed task 1\n");
 }
 
 
 void vTimer2Callback(TimerHandle_t xTimer)
 {
+
+
     TickType_t value;
     value=xTaskGetTickCount();
 
@@ -39,7 +33,8 @@ void vTimer2Callback(TimerHandle_t xTimer)
         UARTprintf("Failed to write to queue\n");
     }
     if(xTaskNotify(xTask3,LOG_STRING,eSetValueWithOverwrite)!=pdTRUE)
-          UARTprintf("Notification not passed task 2\n");
+        UARTprintf("Notification not passed task 2\n");
+
 }
 
 static void Task1(void *pvParameters)
@@ -98,8 +93,22 @@ static void Task3(void *pvParameters)
 
         if(event == TOGGLE_LED)
         {
-            GPIOPinWrite(GPIO_PORTN_BASE, LED1, ui8led1Data);
-            ui8led1Data=~ui8led1Data;
+            if(toggle)
+            {
+                LEDOFF(LED1);
+                LEDON(LED2);
+                LED_OFF(LED3);
+                LED_ON(LED4);
+            }
+            else
+            {
+                LEDON(LED1);
+                LEDOFF(LED2);
+                LED_OFF(LED4);
+                LED_ON(LED3);
+            }
+
+            toggle=(!toggle);
         }
         else if(event == LOG_STRING)
         {

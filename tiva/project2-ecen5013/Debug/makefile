@@ -12,9 +12,13 @@ GEN_CMDS__FLAG :=
 ORDERED_OBJS += \
 "./main.obj" \
 "./my_tasks.obj" \
+"./packet_comm.obj" \
+"./serial_write.obj" \
 "./tm4c1292ncpdt_startup_ccs.obj" \
 "./uartstdio.obj" \
-"./driver/driverInit.obj" \
+"./driver/ethernet.obj" \
+"./driver/leds.obj" \
+"./driver/serial_interface.obj" \
 "./third_party/FreeRTOS/Source/croutine.obj" \
 "./third_party/FreeRTOS/Source/event_groups.obj" \
 "./third_party/FreeRTOS/Source/list.obj" \
@@ -24,6 +28,18 @@ ORDERED_OBJS += \
 "./third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/port.obj" \
 "./third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.obj" \
 "./third_party/FreeRTOS/Source/portable/MemMang/heap_4.obj" \
+"./third_party/FreeRTOS-Plus-TCP/FreeRTOS_ARP.obj" \
+"./third_party/FreeRTOS-Plus-TCP/FreeRTOS_DHCP.obj" \
+"./third_party/FreeRTOS-Plus-TCP/FreeRTOS_DNS.obj" \
+"./third_party/FreeRTOS-Plus-TCP/FreeRTOS_IP.obj" \
+"./third_party/FreeRTOS-Plus-TCP/FreeRTOS_Sockets.obj" \
+"./third_party/FreeRTOS-Plus-TCP/FreeRTOS_Stream_Buffer.obj" \
+"./third_party/FreeRTOS-Plus-TCP/FreeRTOS_TCP_IP.obj" \
+"./third_party/FreeRTOS-Plus-TCP/FreeRTOS_TCP_WIN.obj" \
+"./third_party/FreeRTOS-Plus-TCP/FreeRTOS_UDP_IP.obj" \
+"./third_party/FreeRTOS-Plus-TCP/portable/BufferManagement/BufferAllocation_2.obj" \
+"./third_party/FreeRTOS-Plus-TCP/portable/NetworkInterface/ARM_CM4F/NetworkInterface.obj" \
+"./third_party/FreeRTOS-Plus-TCP/protocols/Common/FreeRTOS_TCP_server.obj" \
 "../driverlib.lib" \
 "../tm4c1292ncpdt.cmd" \
 $(GEN_CMDS__FLAG) \
@@ -41,11 +57,19 @@ RMDIR := RMDIR /S/Q
 -include third_party/FreeRTOS/Source/subdir_vars.mk
 -include third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/subdir_vars.mk
 -include third_party/FreeRTOS/Source/portable/MemMang/subdir_vars.mk
+-include third_party/FreeRTOS-Plus-TCP/subdir_vars.mk
+-include third_party/FreeRTOS-Plus-TCP/portable/BufferManagement/subdir_vars.mk
+-include third_party/FreeRTOS-Plus-TCP/portable/NetworkInterface/ARM_CM4F/subdir_vars.mk
+-include third_party/FreeRTOS-Plus-TCP/protocols/Common/subdir_vars.mk
 -include subdir_rules.mk
 -include driver/subdir_rules.mk
 -include third_party/FreeRTOS/Source/subdir_rules.mk
 -include third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/subdir_rules.mk
 -include third_party/FreeRTOS/Source/portable/MemMang/subdir_rules.mk
+-include third_party/FreeRTOS-Plus-TCP/subdir_rules.mk
+-include third_party/FreeRTOS-Plus-TCP/portable/BufferManagement/subdir_rules.mk
+-include third_party/FreeRTOS-Plus-TCP/portable/NetworkInterface/ARM_CM4F/subdir_rules.mk
+-include third_party/FreeRTOS-Plus-TCP/protocols/Common/subdir_rules.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -176,8 +200,10 @@ project2-ecen5013.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "my_tasks.obj" "tm4c1292ncpdt_startup_ccs.obj" "uartstdio.obj" "driver\driverInit.obj" "third_party\FreeRTOS\Source\croutine.obj" "third_party\FreeRTOS\Source\event_groups.obj" "third_party\FreeRTOS\Source\list.obj" "third_party\FreeRTOS\Source\queue.obj" "third_party\FreeRTOS\Source\tasks.obj" "third_party\FreeRTOS\Source\timers.obj" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\port.obj" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\portasm.obj" "third_party\FreeRTOS\Source\portable\MemMang\heap_4.obj" 
-	-$(RM) "main.d" "my_tasks.d" "tm4c1292ncpdt_startup_ccs.d" "uartstdio.d" "driver\driverInit.d" "third_party\FreeRTOS\Source\croutine.d" "third_party\FreeRTOS\Source\event_groups.d" "third_party\FreeRTOS\Source\list.d" "third_party\FreeRTOS\Source\queue.d" "third_party\FreeRTOS\Source\tasks.d" "third_party\FreeRTOS\Source\timers.d" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\port.d" "third_party\FreeRTOS\Source\portable\MemMang\heap_4.d" 
+	-$(RM) "main.obj" "my_tasks.obj" "packet_comm.obj" "serial_write.obj" "tm4c1292ncpdt_startup_ccs.obj" "uartstdio.obj" "driver\ethernet.obj" "driver\leds.obj" "driver\serial_interface.obj" "third_party\FreeRTOS\Source\croutine.obj" "third_party\FreeRTOS\Source\event_groups.obj" "third_party\FreeRTOS\Source\list.obj" "third_party\FreeRTOS\Source\queue.obj" "third_party\FreeRTOS\Source\tasks.obj" "third_party\FreeRTOS\Source\timers.obj" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\port.obj" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\portasm.obj" "third_party\FreeRTOS\Source\portable\MemMang\heap_4.obj" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_ARP.obj" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_DHCP.obj" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_DNS.obj" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_IP.obj" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_Sockets.obj" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_Stream_Buffer.obj" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_TCP_IP.obj" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_TCP_WIN.obj" 
+	-$(RM) "third_party\FreeRTOS-Plus-TCP\FreeRTOS_UDP_IP.obj" "third_party\FreeRTOS-Plus-TCP\portable\BufferManagement\BufferAllocation_2.obj" "third_party\FreeRTOS-Plus-TCP\portable\NetworkInterface\ARM_CM4F\NetworkInterface.obj" "third_party\FreeRTOS-Plus-TCP\protocols\Common\FreeRTOS_TCP_server.obj" 
+	-$(RM) "main.d" "my_tasks.d" "packet_comm.d" "serial_write.d" "tm4c1292ncpdt_startup_ccs.d" "uartstdio.d" "driver\ethernet.d" "driver\leds.d" "driver\serial_interface.d" "third_party\FreeRTOS\Source\croutine.d" "third_party\FreeRTOS\Source\event_groups.d" "third_party\FreeRTOS\Source\list.d" "third_party\FreeRTOS\Source\queue.d" "third_party\FreeRTOS\Source\tasks.d" "third_party\FreeRTOS\Source\timers.d" "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\port.d" "third_party\FreeRTOS\Source\portable\MemMang\heap_4.d" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_ARP.d" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_DHCP.d" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_DNS.d" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_IP.d" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_Sockets.d" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_Stream_Buffer.d" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_TCP_IP.d" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_TCP_WIN.d" "third_party\FreeRTOS-Plus-TCP\FreeRTOS_UDP_IP.d" "third_party\FreeRTOS-Plus-TCP\portable\BufferManagement\BufferAllocation_2.d" 
+	-$(RM) "third_party\FreeRTOS-Plus-TCP\portable\NetworkInterface\ARM_CM4F\NetworkInterface.d" "third_party\FreeRTOS-Plus-TCP\protocols\Common\FreeRTOS_TCP_server.d" 
 	-$(RM) "third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\portasm.d" 
 	-@echo 'Finished clean'
 	-@echo ' '

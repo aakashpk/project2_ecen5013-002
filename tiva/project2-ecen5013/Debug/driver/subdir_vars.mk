@@ -6,21 +6,33 @@ SHELL = cmd.exe
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../driver/driverInit.c 
+../driver/ethernet.c \
+../driver/leds.c \
+../driver/serial_interface.c 
 
 C_DEPS += \
-./driver/driverInit.d 
+./driver/ethernet.d \
+./driver/leds.d \
+./driver/serial_interface.d 
 
 OBJS += \
-./driver/driverInit.obj 
+./driver/ethernet.obj \
+./driver/leds.obj \
+./driver/serial_interface.obj 
 
 OBJS__QUOTED += \
-"driver\driverInit.obj" 
+"driver\ethernet.obj" \
+"driver\leds.obj" \
+"driver\serial_interface.obj" 
 
 C_DEPS__QUOTED += \
-"driver\driverInit.d" 
+"driver\ethernet.d" \
+"driver\leds.d" \
+"driver\serial_interface.d" 
 
 C_SRCS__QUOTED += \
-"../driver/driverInit.c" 
+"../driver/ethernet.c" \
+"../driver/leds.c" \
+"../driver/serial_interface.c" 
 
 
