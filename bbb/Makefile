@@ -28,6 +28,9 @@ WRAPPED_FUNCTIONS=$(addprefix $(WRAP_FLAG),$(MOCKED_FUNCTIONS))
 
 TESTFLAGS=-lcmocka
 
+#Type of connection local/remote for client executable
+TYPE=LOCAL
+
 #objest files for different scenarios
 MAIN_OBJECT=$(MAIN_SOURCE:.c=.o)
 COMMON_OBJECTS=$(COMMON_SOURCES:.c=.o)
@@ -49,13 +52,14 @@ else
 OBJECTS=$(COMMON_OBJECTS) $(HOST_OBJECTS) $(MAIN_OBJECT)
 endif
 
-#default build , changes based on platform
+
 build: $(OBJECTS)
 	$(CC) $(OBJECTS) -o $(TARGET) $(CFLAGS) $(INCLUDE)
 
+#build and run , changes based on platform
 run: build
 ifeq ($(PLATFORM),BBB)
-	scp $(TARGET) root@192.168.7.2:/home/proj1/$(TARGET)
+	scp $(TARGET) debian@192.168.7.2:/home/debian/proj1/$(TARGET)
 else
 	./$(TARGET) -f logfile.txt
 endif
@@ -66,7 +70,7 @@ all: run
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE)
 
 client:$(CLIENT_SOURCES)
-	$(CC) -o $@ $(CLIENT_SOURCES) $(INCLUDE)
+	$(CC) -o $@ $(CLIENT_SOURCES) $(INCLUDE) -D$(TYPE)
 ifeq ($(PLATFORM),BBB)
 	scp $@ root@192.168.7.2:/home/proj1/$@
 endif

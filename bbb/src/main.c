@@ -160,10 +160,9 @@ int main(int argc, char **argv)
     for(int i=1;i<THREAD_NUMBER;i++)
     {
         pthread_join(threadIDs[i],NULL);
-    } */
+    }*/
 
     return 0;
-
 
 #ifdef BBB
     // Test Code that will execute only on BBB

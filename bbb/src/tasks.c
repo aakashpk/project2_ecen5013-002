@@ -90,7 +90,7 @@ void *temperature_task(void *thread_param)
             msg->temperature.value = 0;
             break;
         case TEMPERATURE:
-            msg->temperature.value = get_temp(1); // TODO use enumerated type
+            msg->temperature.value = get_temp(0); // TODO use enumerated type
             break;
         default:
             abort(); // wrong queue
