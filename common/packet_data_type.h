@@ -84,7 +84,6 @@ typedef struct packet_header_type
     size_t length;// TODO: Is a length required here ??
     packet_type_t packet_type;
     uint32_t timestamp;
-    char foo;
 
 }packet_header_t;
 
@@ -123,9 +122,8 @@ typedef struct data_packet
 {
     packet_header_t header;
 
-
     // padding risk
-
+    
     union
     {
         motor_values_t value;
