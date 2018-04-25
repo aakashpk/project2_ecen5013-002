@@ -14,6 +14,8 @@
 
 #include "logger.h"
 
+#include "packet_data_type.h"
+
 pthread_t threadIDs[THREAD_NUMBER];
 
 volatile sig_atomic_t keep_main_alive;

@@ -9,8 +9,8 @@ TARGET=project1
 CC=gcc
 CSTD=gnu99
 
-INCLUDE=-I./inc
-
+INCLUDE=-I./inc\
+	-I./../common
 
 CFLAGS=-std=$(CSTD)\
 	-lpthread\
