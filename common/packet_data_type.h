@@ -114,7 +114,7 @@ typedef struct pid_parameters
 typedef struct
 {
     bool auto_tune; // auto tune enabled
-    uint32_t rate_s; //update rate in seconds
+    uint32_t update_period_ns; //update period
     float windup_limit; // Integral windup limit
 }pid_config_t;
 
