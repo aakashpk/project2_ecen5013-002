@@ -1,4 +1,15 @@
 #include "my_serial.h"
+#include "packet_data_type.h"
+#include "packet_comms.h"
+
+char *packet_type_strings[] =
+    { "UNINITIALISED",
+      "HEARTBEAT",
+      "MOTOR_VALUES",
+      "PARAMETERS",
+      "CONFIGUARTION",
+    };
+
 
 int open_port(void)
 {
@@ -35,24 +46,33 @@ int main()
 {
 	int port=open_port();
 
-	char a,b=0;
+	char a,b=0xFE;
+	size_t length;
 	int m;
+	packet_data_t data;
 
-	printf("Writing\n");
-	int n = write(port, "Hello World\r\n", 13);
-	if (n < 0) perror("write failed");
+	printf("Starting\n");
+	//int n = write(port, "Hello World\r\n", 13);
+	//if (n < 0) perror("write failed");
+
 
 	printf("Start reading\n");
 	while(1)
 	{
+		length=get_heartbeat(&data);
 		//printf("read try\n");
-		m=read(port,&a,1);
-		if(m>0) printf("%c",a);
-		else perror("read error");
-		write(port,&b, 1);b++;write(port,"\n\r", 2);
+		//m=read(port,&length,4);
+		//read(port,((&data)+sizeof(size_t)),length-sizeof(size_t));
+		print_data_packet(&data);
+		//if(m>0) printf("%c",a);
+		//else perror("read error");
+		//write(port,&b, 1);b++;write(port,"\n\r", 2);
+		write(port,&b, 1);
+		write(port,&data, length);
+		sleep(1);
 	}
 	close(port);
-	printf("Port Closed %d\n",n);
+	printf("Port Closed \n");
 }
 
 /*

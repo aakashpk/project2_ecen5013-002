@@ -4,7 +4,7 @@
 include sources.mk
 
 PLATFORM=HOST
-TARGET=project1
+TARGET=project2
 
 CC=gcc
 CSTD=gnu99
