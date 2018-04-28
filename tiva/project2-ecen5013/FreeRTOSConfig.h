@@ -66,9 +66,7 @@
  * See http://www.freertos.org/a00110.html.
  *----------------------------------------------------------*/
 
-#include "driver/leds.h"
-# include "driver/serial_interface.h"
-#include "driver/ethernet.h"
+
 
 #define configUSE_PREEMPTION                1
 #define configUSE_IDLE_HOOK                 0

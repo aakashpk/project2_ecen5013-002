@@ -1,11 +1,12 @@
-#include <project2_tasks.h>
+#include "project2_tasks.h"
 
 #define TASKSTACKSIZE        128         // Stack size in words
 
-#define TOGGLE_LED (0x01)
-#define LOG_STRING (0x02)
+#define HEARTBEAT_NOTIFY (0x01)
+#define LOG_NOTIFY (0x02)
 
-static TaskHandle_t xTask1 = NULL, xTask2 = NULL,xTask3 = NULL;
+static TaskHandle_t xMotor_task = NULL, xSpeed_measure_task = NULL,
+        xCurrent_measure_task = NULL,xLogger_task=NULL;
 
 TimerHandle_t xTimer1,xTimer2;
 
@@ -13,176 +14,148 @@ bool toggle=true;
 
 extern QueueHandle_t xQueue1;
 
+extern xSemaphoreHandle g_logtask_Semaphore;
 
-void vTimer1Callback(TimerHandle_t xTimer)
+/* Timer callbacks */
+
+void data_update_timer_callback(TimerHandle_t xTimer)
 {
-    if(xTaskNotify(xTask3,TOGGLE_LED,eSetValueWithOverwrite)!=pdTRUE)
-        UARTprintf("Notification not passed task 1\n");
-}
-
-
-void vTimer2Callback(TimerHandle_t xTimer)
-{
-
-
-    TickType_t value;
-    value=xTaskGetTickCount();
-
-    if( xQueueSend( xQueue1,( void * ) &value,( TickType_t ) 10 ) != pdPASS )
-    {
-        UARTprintf("Failed to write to queue\n");
-    }
-    if(xTaskNotify(xTask3,LOG_STRING,eSetValueWithOverwrite)!=pdTRUE)
-        UARTprintf("Notification not passed task 2\n");
 
 }
 
-static void Task1(void *pvParameters)
+void heartbeat_timer_callback(TimerHandle_t xTimer)
 {
-    //Setup timer
-    xTimer1 = xTimerCreate("Timer",pdMS_TO_TICKS(250), pdTRUE,(void *) 0,vTimer1Callback);
+    if(xTaskNotify(xLogger_task,HEARTBEAT_NOTIFY,eSetValueWithOverwrite)!=pdTRUE)
+             UARTprintf("Notification not passed from Heartbeat timer\n");
+}
 
-    // NULL is parameter to be passed to the callback function
-    if( xTimerStart(xTimer1, 0 ) != pdPASS )
+void logger_timer_callback(TimerHandle_t xTimer)
+{
+    if(xTaskNotify(xLogger_task,LOG_NOTIFY,eSetValueWithOverwrite)!=pdTRUE)
+             UARTprintf("Notification not passed from Logger timer\n");
+
+}
+
+/*** Task functions ***/
+
+static void motor_task(void *pvParameters)
+{
+
+    while(1) {}
+
+}
+
+static void speed_measure_task(void *pvParameters)
+{
+    TimerHandle_t xSpeed_timer;
+    xSpeed_timer = xTimerCreate("Logger_Timer",pdMS_TO_TICKS(LOG_INTERVAL), pdTRUE,(void *) 0,data_update_timer_callback);
+    if( xTimerStart(xSpeed_timer, 0 ) != pdPASS )
     {
-        UARTprintf("Timer Setup Error\n");
+        UARTprintf("Speed measure timer Setup Error\n");
     }
+
+    while(1) {}
+
+}
+
+static void current_measure_task(void *pvParameters)
+{
 
 
     while(1)
     {
-        UARTprintf("-------------Task 1 Started\n");
-        ulTaskNotifyTake( pdTRUE, portMAX_DELAY ); //Wait for notification from task2
 
-        xTaskNotifyGive(xTask2); // Notify and unblock task2
+
     }
+
 }
 
-
-static void Task2(void *pvParameters)
+static void logger_task(void *pvParameters)
 {
-    //Setup timer
-    xTimer2 = xTimerCreate("Timer",pdMS_TO_TICKS(125), pdTRUE,(void *) 0,vTimer2Callback);
+    uint32_t event;
 
-    // NULL is parameter to be passed to the callback function
-    if( xTimerStart(xTimer2, 0 ) != pdPASS )
-    {
-        UARTprintf("Timer Setup Error\n");
-    }
+    packet_data_t dataPacket;
 
-    while(1)
-    {
-        UARTprintf("-------------Task 2 Started\n");
-        ulTaskNotifyTake( pdTRUE, portMAX_DELAY ); //Wait for notification from task1
+    TimerHandle_t xLog_timer,xHeartBeat_timer;
 
-        xTaskNotifyGive(xTask1); // Notify and unblock task1
-    }
-}
+    //Create timers for heartbeat and normal logging
+    xLog_timer = xTimerCreate("Logger_Timer",pdMS_TO_TICKS(LOG_INTERVAL), pdTRUE,(void *) 0,logger_timer_callback);
 
+    xHeartBeat_timer = xTimerCreate("Logger_Timer",pdMS_TO_TICKS(HEARTBEAT_INTERVAL), pdTRUE,(void *) 0,heartbeat_timer_callback);
 
-static void Task3(void *pvParameters)
-{
-    uint32_t event=0;
-    TickType_t systick_val;
+    // Start timer and print error if failed to start
+    //if( xTimerStart(xLog_timer, 0 ) != pdPASS ) UARTprintf("Logger timer Setup Error\n");
+    if( xTimerStart(xHeartBeat_timer, 0 ) != pdPASS ) UARTprintf("Heartbeat timer Setup Error\n");
 
     while(1)
     {
         xTaskNotifyWait(0,0xffffffff,&event,portMAX_DELAY);
 
-        //UARTprintf("Event Value %d\n",event);
-
-        if(event == TOGGLE_LED)
+        if(event == HEARTBEAT_NOTIFY)
         {
-            if(toggle)
-            {
-                LEDOFF(LED1);
-                LEDON(LED2);
-                LED_OFF(LED3);
-                LED_ON(LED4);
-            }
-            else
-            {
-                LEDON(LED1);
-                LEDOFF(LED2);
-                LED_OFF(LED4);
-                LED_ON(LED3);
-            }
-
-            toggle=(!toggle);
+            packet_send(COMM_HEARTBEAT,&dataPacket);
         }
-        else if(event == LOG_STRING)
+        else if(event == LOG_NOTIFY)
         {
-            // dequeue from queue and print tick
-            if( xQueueReceive( xQueue1, &systick_val, ( TickType_t ) 10 ) !=pdTRUE)
-            {
-                UARTprintf("Failed to receive from queue\n");
-            }
-            UARTprintf("TASK 2 Systick value [ %d ]\n",systick_val);
+            packet_send(MOTOR_VALUES,&dataPacket);
         }
+        else UARTprintf("[WARN] Unknown task notification\n");
 
     }
+
 }
 
-uint32_t task1Init(void)
+
+/** Task Init Functions **/
+
+uint32_t motor_task_create(void)
 {
-
-    //
-    // Create the task1.
-    //
-    if(xTaskCreate(Task1, (const portCHAR *)"task1",
+    // Create task
+    if(xTaskCreate(motor_task, (const portCHAR *)"motor_task",
                    TASKSTACKSIZE, NULL, tskIDLE_PRIORITY +
-                   PRIORITY_TASK1, &xTask1) != pdTRUE)
+                   PRIORITY_MOTOR_TASK, &xMotor_task) != pdTRUE)
     {
-        return(1);
+        return(1); // return 1 on failure
     }
 
-    //
-    // Success.
-    //
-      return(0);
+      return(0); // Successful task creation
 }
 
-
-
-uint32_t task2Init(void)
+uint32_t speed_measure_task_create(void)
 {
-
-    //
-    // Create the task2.
-    //
-    if(xTaskCreate(Task2, (const portCHAR *)"task2",
+    // Create task
+    if(xTaskCreate(speed_measure_task, (const portCHAR *)"speed_measure_task",
                    TASKSTACKSIZE, NULL, tskIDLE_PRIORITY +
-                   PRIORITY_TASK2, &xTask2) != pdTRUE)
+                   PRIORITY_SPEED_MEASURE_TASK, &xSpeed_measure_task) != pdTRUE)
     {
-        return(1);
+        return(1); // return 1 on failure
     }
 
-    //
-    // Success.
-    //
-    return(0);
+      return(0); // Successful task creation
 }
 
-uint32_t task3Init(void)
+uint32_t current_measure_task_create(void)
 {
-
-    //
-    // Create the task2.
-    //
-    if(xTaskCreate(Task3, (const portCHAR *)"task3",
+    // Create task
+    if(xTaskCreate(current_measure_task, (const portCHAR *)"current_measure_task",
                    TASKSTACKSIZE, NULL, tskIDLE_PRIORITY +
-                   PRIORITY_TASK3, &xTask3) != pdTRUE)
+                   PRIORITY_CURRENT_MEASURE_TASK, &xCurrent_measure_task) != pdTRUE)
     {
-        return(1);
+        return(1); // return 1 on failure
     }
 
-    //
-    // Success.
-    //
-    return(0);
+      return(0); // Successful task creation
 }
 
+uint32_t logger_task_create(void)
+{
+    // Create task
+    if(xTaskCreate(logger_task, (const portCHAR *)"logger_task",
+                   TASKSTACKSIZE, NULL, tskIDLE_PRIORITY +
+                   PRIORITY_LOGGER_TASK, &xLogger_task) != pdTRUE)
+    {
+        return(1); // return 1 on failure
+    }
 
-
-
-
+      return(0); // Successful task creation
+}

@@ -30,9 +30,9 @@
 // The priorities of the various tasks.
 //
 //*****************************************************************************
-#define PRIORITY_TASK1    2
-#define PRIORITY_TASK2    3
-#define PRIORITY_TASK3    1
-
+#define PRIORITY_MOTOR_TASK                 3
+#define PRIORITY_SPEED_MEASURE_TASK         4
+#define PRIORITY_CURRENT_MEASURE_TASK       5
+#define PRIORITY_LOGGER_TASK                6
 
 #endif // __PRIORITIES_H__

@@ -48,6 +48,7 @@
 #include "NetworkInterface.h"
 
 extern QueueHandle_t xPingReplyQueue;
+uint32_t ip;
 
 //*****************************************************************************
 //
@@ -71,9 +72,42 @@ EthernetIntHandler(void)
         //
         // Indicate that a packet has been received.
         //
-        //ProcessReceivedPacket();
+        //xSemaphoreGiveFromISR( vEMACHandlerTask, NULL );
         UARTprintf("\n\n Ethernet ISR\n");
     }
+
+    //portEND_SWITCHING_ISR( ulInterruptCause );
+
+/* for ref from LPC port, can be deleted once above code is working
+ uint32_t ulInterruptCause;
+
+    while( ( ulInterruptCause = LPC_EMAC->IntStatus ) != 0 )
+    {
+        // Clear the interrupt.
+        LPC_EMAC->IntClear = ulInterruptCause;
+
+        // Clear fatal error conditions.  NOTE:  The driver does not clear all
+        errors, only those actually experienced.  For future reference, range
+        errors are not actually errors so can be ignored.
+        if( ( ulInterruptCause & EMAC_INT_TX_UNDERRUN ) != 0U )
+        {
+            LPC_EMAC->Command |= EMAC_CR_TX_RES;
+        }
+
+        // Unblock the deferred interrupt handler task if the event was an Rx.
+        if( ( ulInterruptCause & EMAC_INT_RX_DONE ) != 0UL )
+        {
+            xSemaphoreGiveFromISR( xEMACRxEventSemaphore, NULL );
+        }
+    }
+
+    // ulInterruptCause is used for convenience here.  A context switch is
+    //wanted, but coding portEND_SWITCHING_ISR( 1 ) would likely result in a
+    //compiler warning.
+    portEND_SWITCHING_ISR( ulInterruptCause );
+ */
+
+
 }
 
 /*
@@ -115,7 +149,13 @@ BaseType_t xNetworkInterfaceInitialise( void )
 BaseType_t xNetworkInterfaceOutput( NetworkBufferDescriptor_t * const pxNetworkBuffer, BaseType_t xReleaseAfterSend )
 {
     UARTprintf("\nxNetworkInterfaceOutput called \n");
-    return pdPASS;
+
+    //extern void vEMACCopyWrite( uint8_t * pucBuffer, uint16_t usLength );
+
+    //vEMACCopyWrite( pxNetworkBuffer->pucBuffer, pxNetworkBuffer->xDataLength );
+
+    vReleaseNetworkBufferAndDescriptor( pxNetworkBuffer );
+    return pdTRUE;
 }
 void vNetworkInterfaceAllocateRAMToBuffers( NetworkBufferDescriptor_t pxNetworkBuffers[ ipconfigNUM_NETWORK_BUFFER_DESCRIPTORS ] )
 {
@@ -132,6 +172,8 @@ void vApplicationIPNetworkEventHook( eIPCallbackEvent_t eNetworkEvent )
     if(eNetworkEvent==eNetworkUp)
     {
         UARTprintf("\n\n Connected to network \n");
+        ip=FreeRTOS_GetIPAddress();
+        UARTprintf("\n IP setup %x\n",ip);
         vSendPing("192.168.0.100");
     }
     else if(eNetworkEvent==eNetworkDown)
