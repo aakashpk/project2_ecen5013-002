@@ -131,6 +131,7 @@ typedef struct data_packet
         pid_config_t configuration;
     } ;
 
+    size_t checksum;
 
 }packet_data_t;
 
