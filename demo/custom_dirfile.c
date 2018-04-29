@@ -393,6 +393,8 @@ int main(void)
 
     char input_path[] = "combo_structs";
 
+#define GEN_ENABLE 1
+#if GEN_ENABLE
     // datagen for testing
     pthread_t datagen_thread;
     int retval;
@@ -402,6 +404,7 @@ int main(void)
         printf("pthread create issue %s\n", strerror(retval));
         abort();
     }
+#endif
     // File read will return 0 bytes at EOF and trigger loop exit
     // This is fine for testing. Other communication schemes will support better blocking.
 
@@ -640,7 +643,10 @@ int main(void)
     }
 
     printf("read zero bytes (EOF) - main loop exiting\n");
+
+#if GEN_ENABLE
     pthread_join(datagen_thread, NULL);
+#endif
 
     return 0;
 }
