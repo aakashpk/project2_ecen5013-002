@@ -619,6 +619,9 @@ int main(void)
                 // not enough bytes
                 printf("not enough bytes for packet type %d. Required %zu, available %zu\n",
                        packet_type, required_packet_size, bytes_remaining);
+
+                // Need to undo consuming magic_num bytes for re-read later - kinda hacky
+                bytes_consumed -= sizeof(magic_num);
                 break;
             }
 
