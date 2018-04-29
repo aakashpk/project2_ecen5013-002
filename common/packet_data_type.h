@@ -66,29 +66,27 @@ struct pid status // TIVA -> GUI
 #include <stdint.h>
 #include <stdbool.h>
 
-
-typedef enum packet_type
-{
+typedef enum {
     UNINITIALISED,
     COMM_HEARTBEAT, // Only packet type and timestamp
-    MOTOR_VALUES,  // motor speed, setpoint, error, pid values
-    PARAMETERS, // pid parameters
-    CONFIGUARTION, // pid config data
+    MOTOR_VALUES,   // motor speed, setpoint, error, pid values
+    PID_PARAMETERS,     // pid parameters
+    PID_CONFIGUARTION,  // pid config data
+    NUM_PACKET_TYPES,
 
-}packet_type_t;
+} packet_type_t;
 
 extern char *packet_type_strings[];
 
-typedef struct packet_header_type
+typedef struct
 {
-    size_t length;// TODO: Is a length required here ??
-    packet_type_t packet_type;
+    uint32_t length; // Not required, since we can derrive length from packet type.
+    uint32_t packet_type;
     uint32_t timestamp;
 
-}packet_header_t;
+} packet_header_t;
 
-
-typedef struct motor_values
+typedef struct
 {
     float speed; // motor speed in rps, read from tachometer
     float setpoint; //required speed in rps
@@ -102,66 +100,43 @@ typedef struct motor_values
     float i_value;
     float d_value;
 
-}motor_values_t;
+} motor_values_t;
 
-typedef struct pid_parameters
+typedef struct
 {
     float kp;
     float ki;
     float kd;
-}pid_param_t;
+
+} pid_param_t;
 
 typedef struct
 {
-    bool auto_tune; // auto tune enabled
+    uint32_t auto_tune; // auto tune enabled
     uint32_t update_period_ns; //update period
     float windup_limit; // Integral windup limit
-}pid_config_t;
 
-typedef struct data_packet
+} pid_config_t;
+
+typedef struct
 {
     packet_header_t header;
 
     // padding risk
-    
+
     union
     {
-        motor_values_t value;
-        pid_param_t parameters;
-        pid_config_t configuration;
+        motor_values_t motor_values;
+        pid_param_t pid_param;
+        pid_config_t pid_config;
+        uint32_t payload; // convenience handle to union address
+        // Above "payload" is less confusing than pointing to other types to get
+        // this address for the generic case, and avoids using named union,
+        // which makes children more annoying to access.
     } ;
 
-    size_t checksum;
+    uint32_t checksum;
 
-}packet_data_t;
+} packet_data_t;
 
 #endif /* PACKET_DATA_TYPE_H_ */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
