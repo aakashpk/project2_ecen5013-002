@@ -32,7 +32,7 @@ kd RAW FLOAT32 1
 # bool, but can allow faster writes (in exchange for disk space),
 # by writing 32-bit word.
 # writing bits is also allowed, but may not be worth slowdown,
-since flushing every write. Would be more ideal if flushing after many samples.
+# since flushing every write. Would be more ideal if flushing after many samples.
 auto_tune RAW UINT32 1
 
 # period of PID loop (time between updates),
