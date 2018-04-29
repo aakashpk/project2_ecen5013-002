@@ -34,6 +34,7 @@ can setup a flush interval for performance customization
 
 #include "packet_data_type.h"
 
+// Todo - consolidate write_flush and fwrite_check
 void write_flush(FILE *fp, void *data, size_t len, bool force_flush)
 {
     assert(1 == fwrite(data, len, 1, fp));
@@ -479,6 +480,7 @@ int main(void)
     char input_path[] = "combo_structs";
 
 #define GEN_ENABLE 1
+#define GEN_BLOCK 1
 #if GEN_ENABLE
     // datagen for testing
     pthread_t datagen_thread;
@@ -495,8 +497,13 @@ int main(void)
 
     sleep(1); // allow file to be created while debugging
 
-    // single shot debug
-    //pthread_join(datagen_thread, NULL);
+#if GEN_ENABLE
+#if GEN_BLOCK
+    // Force continuous or time-limited data generation
+    pthread_join(datagen_thread, NULL);
+#endif
+#endif
+    // File read will return 0 bytes at EOF and trigger loop exit
 
     // Todo - will need to read command line speed configuration commands as well as log data.
     // Solution involves select on fdset
