@@ -32,7 +32,7 @@
 //*****************************************************************************
 #define PRIORITY_MOTOR_TASK                 3
 #define PRIORITY_SPEED_MEASURE_TASK         4
-#define PRIORITY_CURRENT_MEASURE_TASK       5
-#define PRIORITY_LOGGER_TASK                6
+#define PRIORITY_CURRENT_MEASURE_TASK       6
+#define PRIORITY_LOGGER_TASK                5
 
 #endif // __PRIORITIES_H__

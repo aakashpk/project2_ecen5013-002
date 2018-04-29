@@ -2,8 +2,6 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
-SHELL = cmd.exe
-
 # Add inputs and outputs from these tool invocations to the build variables 
 ASM_SRCS += \
 ../third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.asm 
@@ -22,14 +20,14 @@ ASM_DEPS += \
 ./third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.d 
 
 OBJS__QUOTED += \
-"third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\port.obj" \
-"third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\portasm.obj" 
+"third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/port.obj" \
+"third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.obj" 
 
 C_DEPS__QUOTED += \
-"third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\port.d" 
+"third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/port.d" 
 
 ASM_DEPS__QUOTED += \
-"third_party\FreeRTOS\Source\portable\CCS\ARM_CM4F\portasm.d" 
+"third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.d" 
 
 C_SRCS__QUOTED += \
 "../third_party/FreeRTOS/Source/portable/CCS/ARM_CM4F/port.c" 

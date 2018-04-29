@@ -2,7 +2,7 @@
  * current_sensor.c
  *
  *  Created on: Apr 26, 2018
- *      Author: aakash
+ *      Author: Aakash
  */
 
 #include "driver/current_sensor.h"

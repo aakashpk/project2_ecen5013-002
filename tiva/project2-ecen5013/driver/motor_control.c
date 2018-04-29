@@ -89,7 +89,6 @@ void motor_speed(uint8_t duty_cycle) // value is % number and
     PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, width);
 }
 
-
 void led_bright(uint8_t value) // value is % number and
 //pulse width gets calculated in function
 {
@@ -100,3 +99,47 @@ void led_bright(uint8_t value) // value is % number and
     PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, width);
 }
 
+//TODO: fix these functions
+float get_pvalue(void)
+{
+    float value=0;
+
+    return value;
+}
+
+
+float get_ivalue(void)
+{
+    float value=0;
+
+    return value;
+}
+
+float get_dvalue(void)
+{
+    float value=0;
+
+    return value;
+}
+
+float get_kp(void)
+{
+    float value=0;
+
+    return value;
+}
+
+float get_ki(void)
+{
+    float value=0;
+
+    return value;
+}
+
+
+float get_kd(void)
+{
+    float value=0;
+
+    return value;
+}

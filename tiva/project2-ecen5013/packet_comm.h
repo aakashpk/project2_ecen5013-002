@@ -16,8 +16,13 @@
 #include "packet_data_type.h"
 #include "driver/serial_interface.h"
 
+#include "driver/speed_sensor.h"
+#include "driver/motor_control.h"
+
 #include "FreeRTOS.h"
 #include "FreeRTOS_Sockets.h"
+
+
 
 
 typedef enum comms_hardware

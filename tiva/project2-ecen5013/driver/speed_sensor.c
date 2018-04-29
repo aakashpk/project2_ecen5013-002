@@ -44,12 +44,19 @@ void quad_encoder_init(void)
     // revolution; therefore set the maximum position to 3999 as the count
     // is zero based.
     //
-    QEIConfigure(QEI0_BASE, (QEI_CONFIG_CAPTURE_A_B | QEI_CONFIG_RESET_IDX |
-    QEI_CONFIG_QUADRATURE | QEI_CONFIG_NO_SWAP), 3999);
+
+
+    // count set to 63 as 64 pulses per revolution
+    QEIConfigure(QEI0_BASE, (QEI_CONFIG_CAPTURE_A_B | QEI_CONFIG_NO_RESET |
+    QEI_CONFIG_QUADRATURE | QEI_CONFIG_NO_SWAP), 63);
     //
     // Enable the quadrature encoder.
     //
     QEIEnable(QEI0_BASE);
+
+    QEIVelocityConfigure(QEI0_BASE,QEI_VELDIV_4,480000);
+
+    QEIVelocityEnable(QEI0_BASE);
 }
 
 uint32_t get_position(void)
@@ -58,3 +65,41 @@ uint32_t get_position(void)
     //
     return QEIPositionGet(QEI0_BASE);
 }
+
+
+float get_speed(void)
+{
+   float value=0;
+
+   value=(QEIVelocityGet(QEI0_BASE)*PERIODS_PER_SEC/PULSES_PER_REV);
+
+   return value;
+}
+
+uint32_t get_speed_test(void)
+{
+   uint32_t value=0;
+
+   value=QEIVelocityGet(QEI0_BASE);
+
+   return value;
+}
+
+float get_speed_setpoint(void)
+{
+   float value=0;
+
+   return value;
+}
+
+float get_error(void)
+{
+   float value=0;
+
+   return value;
+}
+
+
+
+
+

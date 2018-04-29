@@ -5,7 +5,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
-#include "FreeRTOS_sockets.h"
+#include "FreeRTOS_Sockets.h"
 #include "FreeRTOS_IP.h"
 #include "semphr.h"
 #include "timers.h"
@@ -52,6 +52,8 @@ QueueHandle_t xQueue1,xPingReplyQueue;
 
 xSemaphoreHandle g_logtask_Semaphore;
 
+SemaphoreHandle_t xData_Semaphore;
+
 int main(void)
 {
     // Setup clock to run processor at 120Mhz
@@ -68,11 +70,12 @@ int main(void)
     ConfigureLEDs();
 
     adc_init();
+    quad_encoder_init();
     pwm_init();
 
-    motor_speed(65);
+    motor_speed(100);
 
-
+    xData_Semaphore=xSemaphoreCreateMutex();
 
     //g_logtask_Semaphore = xSemaphoreCreateMutex();
 
@@ -103,6 +106,27 @@ int main(void)
 
 
     //xQueue1=xQueueCreate(2, sizeof(TickType_t) );
+*/
+
+    if(motor_task_create() != 0)
+    {
+        UARTprintf("\n\n Speed_measure_task not Initialized\n");
+
+        while(1)
+        {
+        }
+    }
+
+
+    if(speed_measure_task_create() != 0)
+    {
+        UARTprintf("\n\n Speed_measure_task not Initialized\n");
+
+        while(1)
+        {
+        }
+    }
+
 
     if(current_measure_task_create() != 0)
     {
@@ -112,7 +136,9 @@ int main(void)
         {
         }
     }
-*/
+
+
+
     if(logger_task_create() != 0)
     {
         UARTprintf("\n\n Current_measure_task not Initialized\n");
@@ -126,6 +152,7 @@ int main(void)
     vTaskStartScheduler();
 
     UARTprintf("\n\nError, Scheduler returned\n");
+
    int i=0;
 
     while(1)

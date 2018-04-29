@@ -16,8 +16,22 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/qei.h"
 
+#define PULSES_PER_REV  16
+#define PERIODS_PER_SEC 250
+
 void quad_encoder_init(void);
 
 uint32_t get_position(void);
+
+
+float get_speed(void);
+
+
+float get_speed_setpoint(void);
+
+
+float get_error(void);
+
+uint32_t get_speed_test(void);
 
 #endif /* SPEED_SENSOR_H_ */

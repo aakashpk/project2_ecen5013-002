@@ -32,7 +32,11 @@
 
 #define SPEED_READ_INTERVAL 10
 
+#define CURRENT_READ_INTERVAL 100
+
 #define HEARTBEAT_INTERVAL 1000
+
+#define MOTOR_CALC_INTERVAL 100
 
 //*****************************************************************************
 //

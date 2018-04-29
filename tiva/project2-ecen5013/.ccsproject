@@ -14,4 +14,5 @@
 	<templateProperties value="id=com.ti.common.project.core.emptyProjectWithMainTemplate,"/>
 	<filesToOpen value="main.c,"/>
 	<isTargetManual value="false"/>
+	<origin value="/media/aakash/F8A4C91FA4C8E0EC/UCBoulder/Acads/Sem_2/5013-002_APES/repos/project2_ecen5013-002/tiva/project2-ecen5013"/>
 </projectOptions>

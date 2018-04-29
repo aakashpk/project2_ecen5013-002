@@ -56,10 +56,6 @@ int packet_send(packet_type_t type, packet_data_t * packet)
     switch(comm_hw_used)
     {
         case UART:
-            // magic
-            // header
-            // body
-            // cksum
             uart_send_n((void *)packet,length);
             break;
         case TCP:
@@ -102,12 +98,12 @@ size_t get_motor_values(packet_data_t * packet)
     packet->header.length=value;
 
     //TODO: to call correct functions here
-    packet->value.speed=0;
-    packet->value.setpoint=0;
-    packet->value.error=0;
-    packet->value.p_value=0;
-    packet->value.i_value=0;
-    packet->value.d_value=0;
+    packet->value.speed=get_speed();
+    packet->value.setpoint=get_speed_setpoint();
+    packet->value.error=get_error();
+    packet->value.p_value=get_pvalue();
+    packet->value.i_value=get_ivalue();
+    packet->value.d_value=get_dvalue();
     packet->value.pwm_output=0;
 
     //packet->checksum=calc_checksum(MOTOR_VALUES,packet);
@@ -126,10 +122,9 @@ size_t get_pid_params(packet_data_t * packet)
     packet->header.timestamp=xTaskGetTickCount();
     packet->header.length=value;
 
-    //TODO: to call correct functions here
-    packet->parameters.kp=0;
-    packet->parameters.ki=0;
-    packet->parameters.kd=0;
+    packet->parameters.kp=get_kp();
+    packet->parameters.ki=get_ki();
+    packet->parameters.kd=get_kd();
 
     //packet->checksum=calc_checksum(PARAMETERS,packet);
 
