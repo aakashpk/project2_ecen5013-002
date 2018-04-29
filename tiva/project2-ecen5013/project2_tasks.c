@@ -1,15 +1,15 @@
 #include "project2_tasks.h"
 
-#define TASKSTACKSIZE        128         // Stack size in words
+#define TASKSTACKSIZE   1024         // Stack size in words 128
 
 #define HEARTBEAT_NOTIFY (0x01)
 #define LOG_NOTIFY (0x02)
 
 
-
-
-static TaskHandle_t xMotor_task = NULL, xSpeed_measure_task = NULL,
-        xCurrent_measure_task = NULL,xLogger_task=NULL;
+static TaskHandle_t
+        xMotor_task = NULL, xSpeed_measure_task = NULL,
+        xCurrent_measure_task = NULL,xLogger_task=NULL,
+        xLog_receive_task=NULL;
 
 TimerHandle_t xTimer1,xTimer2;
 
@@ -60,23 +60,31 @@ void pid_timer_callback(TimerHandle_t xTimer)
 
 static void motor_task(void *pvParameters)
 {
+    uint8_t speed;
+
     TimerHandle_t xMotor_timer;
     xMotor_timer = xTimerCreate("Logger_Timer",pdMS_TO_TICKS(MOTOR_CALC_INTERVAL),
                                 pdTRUE,(void *) 0,pid_timer_callback);
     if( xTimerStart(xMotor_timer, 0 ) != pdPASS )
         UARTprintf("Current measure timer setup Error !!\n");
 
+    char fstring[20];
+
     while(1)
     {
         ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
-        UARTprintf("---Motor Calc \n");
+
 
         // Add pid calcs here and write to motor
-        /*
+
             motor_speed(speed);
             speed+=5;
-            if(speed>95) speed=0;*/
-    if(xTaskNotify(xLogger_task,LOG_NOTIFY,eSetValueWithOverwrite)!=pdTRUE)
+            if(speed>95) speed=0;
+
+        sprintf (fstring, "%f", gMotorValues.current);
+        UARTprintf("[LOG] PWM value %d\n",speed);
+
+        if(xTaskNotify(xLogger_task,LOG_NOTIFY,eSetValueWithOverwrite)!=pdTRUE)
                 UARTprintf("Notification not passed from Logger timer\n");
     }
 
@@ -90,16 +98,17 @@ static void current_measure_task(void *pvParameters)
                                 pdTRUE,(void *) 0,current_update_timer_callback);
     if( xTimerStart(xCurrent_timer, 0 ) != pdPASS )
         UARTprintf("Current measure timer setup Error !!\n");
-    char pstring[10];
+    char fstring[20];
+
     while(1)
     {
         ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
         //xSemaphoreTake( xData_Semaphore, ( TickType_t ) 10 );
         gMotorValues.current=get_current();
-        //sprintf (pstring, "%f\n", gMotorValues.current);
-        //val=get_adc_count();
-        UARTprintf("reading current \n");
         //xSemaphoreTake( xData_Semaphore, ( TickType_t ) 10 );
+
+        sprintf (fstring, "%f", gMotorValues.current);
+        UARTprintf("[LOG] Current %s\n", fstring);
 
         xTaskNotifyGive(xSpeed_measure_task);
     }
@@ -108,25 +117,19 @@ static void current_measure_task(void *pvParameters)
 
 static void speed_measure_task(void *pvParameters)
 {
-    uint8_t speed;
-
-
+    char fstring[20];
 
     while(1)
     {
         ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
-        UARTprintf("reading speed\n");
-        /*
-        xSemaphoreTake( xData_Semaphore, ( TickType_t ) 10 );
-        gMotorValues.current=get_speed();
-        xSemaphoreTake( xData_Semaphore, ( TickType_t ) 10 );
-        */
-        // get speed
-        // lock mutex
-        // write to global
-        // unlock mutex
-        //ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
-        //UARTprintf("pos: %d, speed: %d",get_position(),get_speed_test());
+
+        //xSemaphoreTake( xData_Semaphore, ( TickType_t ) 10 );
+        gMotorValues.speed=get_speed();
+        //xSemaphoreTake( xData_Semaphore, ( TickType_t ) 10 );
+
+        sprintf (fstring, "%f", gMotorValues.speed);
+        UARTprintf("[LOG] Speed %s\n", fstring);
+
     }
 
 }
@@ -163,13 +166,60 @@ static void logger_task(void *pvParameters)
         else if(event == LOG_NOTIFY)
         {
             packet_send(MOTOR_VALUES,&dataPacket);
-            UARTprintf("Logging data\n");
 
         }
         else UARTprintf("[WARN] Unknown task notification\n");
 
     }
 
+}
+
+
+static void log_receive_task(void *pvParameters)
+{
+    uint32_t length;
+    packet_data_t my_packet;
+
+    /* TURNS on LED1 when data is being read,
+     * this LED will function as UART Rx traffic LED
+     *
+     * and turns on LED2 when waiting for magic
+     * char, these can be used for debug externally
+     *
+     */
+        while(1)
+        {
+            xSemaphoreTake( xUARTRxEventSemaphore, portMAX_DELAY );
+
+            //if (UARTCharsAvail(UART3_BASE)) UARTCharPut(UART0_BASE, UARTCharGet(UART3_BASE));
+
+            UARTIntDisable(UART3_BASE,UART_INT_RX);
+
+            while (UARTCharsAvail(UART3_BASE))
+            {
+
+                if(UARTCharGet(UART3_BASE)==0xFE)
+                {
+                    LEDON(LED1); // UART receive activity
+                    LEDOFF(LED2);
+                    uart_get_n(&length,4);
+                    uart_get_n(&my_packet,(length-4));
+
+                    //UARTprintf("ts: %d",my_packet.header.timestamp);
+                    print_data_packet(&my_packet);
+                }
+                else
+                {
+                    LEDOFF(LED1);
+                    LEDON(LED2); //looking for magic character
+                }
+
+            }
+
+            UARTIntEnable(UART3_BASE,UART_INT_RX);
+            LEDOFF(LED1);
+            LEDOFF(LED2);
+        }
 }
 
 
@@ -227,3 +277,19 @@ uint32_t logger_task_create(void)
 
       return(0); // Successful task creation
 }
+
+
+
+uint32_t log_receive_task_create(void)
+{
+    // Create task
+    if(xTaskCreate(log_receive_task, (const portCHAR *)"log_receive_task",
+                   TASKSTACKSIZE, NULL, tskIDLE_PRIORITY +
+                   PRIORITY_LOGGER_TASK, &xLog_receive_task) != pdTRUE)
+    {
+        return(1); // return 1 on failure
+    }
+
+      return(0); // Successful task creation
+}
+

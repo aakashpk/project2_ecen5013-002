@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
+SHELL = cmd.exe
+
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../third_party/FreeRTOS/Source/croutine.c \
@@ -28,20 +30,20 @@ OBJS += \
 ./third_party/FreeRTOS/Source/timers.obj 
 
 OBJS__QUOTED += \
-"third_party/FreeRTOS/Source/croutine.obj" \
-"third_party/FreeRTOS/Source/event_groups.obj" \
-"third_party/FreeRTOS/Source/list.obj" \
-"third_party/FreeRTOS/Source/queue.obj" \
-"third_party/FreeRTOS/Source/tasks.obj" \
-"third_party/FreeRTOS/Source/timers.obj" 
+"third_party\FreeRTOS\Source\croutine.obj" \
+"third_party\FreeRTOS\Source\event_groups.obj" \
+"third_party\FreeRTOS\Source\list.obj" \
+"third_party\FreeRTOS\Source\queue.obj" \
+"third_party\FreeRTOS\Source\tasks.obj" \
+"third_party\FreeRTOS\Source\timers.obj" 
 
 C_DEPS__QUOTED += \
-"third_party/FreeRTOS/Source/croutine.d" \
-"third_party/FreeRTOS/Source/event_groups.d" \
-"third_party/FreeRTOS/Source/list.d" \
-"third_party/FreeRTOS/Source/queue.d" \
-"third_party/FreeRTOS/Source/tasks.d" \
-"third_party/FreeRTOS/Source/timers.d" 
+"third_party\FreeRTOS\Source\croutine.d" \
+"third_party\FreeRTOS\Source\event_groups.d" \
+"third_party\FreeRTOS\Source\list.d" \
+"third_party\FreeRTOS\Source\queue.d" \
+"third_party\FreeRTOS\Source\tasks.d" \
+"third_party\FreeRTOS\Source\timers.d" 
 
 C_SRCS__QUOTED += \
 "../third_party/FreeRTOS/Source/croutine.c" \

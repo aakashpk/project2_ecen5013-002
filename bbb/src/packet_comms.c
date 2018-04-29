@@ -120,7 +120,8 @@ void print_data_packet(packet_data_t * packet)
     switch(type)
     {
         case COMM_HEARTBEAT:
-            printf("[%s] at %d\n",packet_type_strings[type],packet->header.timestamp);
+            printf("[%s] at %d size: %d\n",packet_type_strings[type],
+                                        packet->header.timestamp,packet->header.length);
             break;
         case MOTOR_VALUES:
             printf("[%s] at %d \n",packet_type_strings[type],packet->header.timestamp);

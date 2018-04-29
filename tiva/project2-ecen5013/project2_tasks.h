@@ -27,16 +27,16 @@
 // for uart printf
 #include "utils/uartstdio.h"
 
+#include "pid.h"
+
 // Time between logs in ms
 #define LOG_INTERVAL 500
 
-#define SPEED_READ_INTERVAL 10
-
-#define CURRENT_READ_INTERVAL 100
+#define CURRENT_READ_INTERVAL 500
 
 #define HEARTBEAT_INTERVAL 1000
 
-#define MOTOR_CALC_INTERVAL 100
+#define MOTOR_CALC_INTERVAL 500
 
 //*****************************************************************************
 //
@@ -51,5 +51,7 @@ uint32_t speed_measure_task_create(void);
 uint32_t current_measure_task_create(void);
 
 uint32_t logger_task_create(void);
+
+uint32_t log_receive_task_create(void);
 
 #endif // __PROJECT2_TASKS_H__

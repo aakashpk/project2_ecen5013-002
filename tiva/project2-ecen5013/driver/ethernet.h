@@ -23,6 +23,15 @@
 
 #include "driver/serial_interface.h"
 
+#define NUM_TX_DESCRIPTORS 3
+#define NUM_RX_DESCRIPTORS 3
+
+extern tEMACDMADescriptor g_psRxDescriptor[NUM_TX_DESCRIPTORS];
+extern tEMACDMADescriptor g_psTxDescriptor[NUM_RX_DESCRIPTORS];
+extern uint32_t g_ui32RxDescIndex;
+extern uint32_t g_ui32TxDescIndex;
+
+
 extern uint32_t  g_ui32SysClock;
 
 void enable_eth0(void);
@@ -30,6 +39,7 @@ void enable_eth0(void);
 int32_t ProcessReceivedPacket(void);
 void InitDescriptors(uint32_t ui32Base);
 
+int32_t PacketTransmit(uint8_t *pui8Buf, int32_t i32BufLen);
 
 //BaseType_t vSendPing( const char *pcIPAddress );
 

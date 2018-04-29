@@ -101,41 +101,13 @@ size_t uart_get_n(void * src_ptr, size_t len)
     return len;
 }
 
-uint32_t length;
-packet_data_t my_packet;
+
 
 void UART3IntHandler(void)
 {
     UARTIntClear(UART3_BASE,UART_INT_RX);
 
-    UARTIntDisable(UART3_BASE,UART_INT_RX);
-    //if (UARTCharsAvail(UART3_BASE)) UARTCharPut(UART0_BASE, UARTCharGet(UART3_BASE));
-
-    // Move this part to a delayed interrupt handler task
-    while (UARTCharsAvail(UART3_BASE))
-    {
-
-        if(UARTCharGet(UART3_BASE)==0xFE)
-        {
-            LEDON(LED1); // UART receive activity
-            LEDOFF(LED2);
-            uart_get_n(&length,4);
-            uart_get_n(&my_packet,(length-4));
-
-            //UARTprintf("ts: %d",my_packet.header.timestamp);
-            print_data_packet(&my_packet);
-        }
-        else
-        {
-            LEDOFF(LED1);
-            LEDON(LED2); //looking for magic character
-        }
-
-    }
-
-    UARTIntEnable(UART3_BASE,UART_INT_RX);
-    LEDOFF(LED1);
-    LEDOFF(LED2);
+    xSemaphoreGiveFromISR( xUARTRxEventSemaphore, NULL );
 }
 
 

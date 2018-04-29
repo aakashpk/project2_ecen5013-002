@@ -22,6 +22,11 @@
 
 #include "utils/uartstdio.h"
 
+#include "FreeRTOS.h"
+#include "semphr.h"
+
+extern SemaphoreHandle_t xUARTRxEventSemaphore;
+
 #define DATA_UART UART3_BASE
 
 void UART0_Init(uint32_t ui32SysClkFreq,uint32_t baudrate);
@@ -31,6 +36,9 @@ void UART3_Init(uint32_t ui32SysClkFreq,uint32_t baudrate);
  *
  */
 size_t uart_send_n(void * src_ptr, size_t len);
+
+
+size_t uart_get_n(void * src_ptr, size_t len);
 
 /**
  * UART Interrupt handler

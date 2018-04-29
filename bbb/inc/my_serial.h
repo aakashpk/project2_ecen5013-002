@@ -11,3 +11,4 @@
 #define UART1 "/dev/ttyS1"
 #define UART2 "/dev/ttyS2"
 #define UART4 "/dev/ttyS4"
+#define UART_TEST "/dev/ttyUSB0"

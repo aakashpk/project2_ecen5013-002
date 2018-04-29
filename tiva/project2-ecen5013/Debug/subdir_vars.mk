@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
+SHELL = cmd.exe
+
 # Add inputs and outputs from these tool invocations to the build variables 
 CMD_SRCS += \
 ../tm4c1292ncpdt.cmd 
@@ -12,6 +14,7 @@ LIB_SRCS += \
 C_SRCS += \
 ../main.c \
 ../packet_comm.c \
+../pid.c \
 ../project2_tasks.c \
 ../serial_write.c \
 ../tm4c1292ncpdt_startup_ccs.c \
@@ -20,6 +23,7 @@ C_SRCS += \
 C_DEPS += \
 ./main.d \
 ./packet_comm.d \
+./pid.d \
 ./project2_tasks.d \
 ./serial_write.d \
 ./tm4c1292ncpdt_startup_ccs.d \
@@ -28,6 +32,7 @@ C_DEPS += \
 OBJS += \
 ./main.obj \
 ./packet_comm.obj \
+./pid.obj \
 ./project2_tasks.obj \
 ./serial_write.obj \
 ./tm4c1292ncpdt_startup_ccs.obj \
@@ -36,6 +41,7 @@ OBJS += \
 OBJS__QUOTED += \
 "main.obj" \
 "packet_comm.obj" \
+"pid.obj" \
 "project2_tasks.obj" \
 "serial_write.obj" \
 "tm4c1292ncpdt_startup_ccs.obj" \
@@ -44,6 +50,7 @@ OBJS__QUOTED += \
 C_DEPS__QUOTED += \
 "main.d" \
 "packet_comm.d" \
+"pid.d" \
 "project2_tasks.d" \
 "serial_write.d" \
 "tm4c1292ncpdt_startup_ccs.d" \
@@ -52,6 +59,7 @@ C_DEPS__QUOTED += \
 C_SRCS__QUOTED += \
 "../main.c" \
 "../packet_comm.c" \
+"../pid.c" \
 "../project2_tasks.c" \
 "../serial_write.c" \
 "../tm4c1292ncpdt_startup_ccs.c" \

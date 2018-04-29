@@ -2,7 +2,7 @@
  * ethernet.c
  *
  *  Created on: Apr 22, 2018
- *      Author: aakash
+ *      Author: Aakash
  */
 
 #include "driver/ethernet.h"
@@ -17,8 +17,7 @@
 // performance.
 //
 //*****************************************************************************
-#define NUM_TX_DESCRIPTORS 3
-#define NUM_RX_DESCRIPTORS 3
+
 tEMACDMADescriptor g_psRxDescriptor[NUM_TX_DESCRIPTORS];
 tEMACDMADescriptor g_psTxDescriptor[NUM_RX_DESCRIPTORS];
 uint32_t g_ui32RxDescIndex;
@@ -114,14 +113,14 @@ ProcessReceivedPacket(void)
 // and i32BufLen contains the number of bytes in the frame.
 //
 //*****************************************************************************
-static int32_t
+//static
+int32_t
 PacketTransmit(uint8_t *pui8Buf, int32_t i32BufLen)
 {
     //
     // Wait for the transmit descriptor to free up.
     //
-    while(g_psTxDescriptor[g_ui32TxDescIndex].ui32CtrlStatus &
-    DES0_TX_CTRL_OWN)
+    while(g_psTxDescriptor[g_ui32TxDescIndex].ui32CtrlStatus & DES0_TX_CTRL_OWN)
     {
         //
         // Spin and waste time.
@@ -327,6 +326,8 @@ void enable_eth0(void)
 	//
 	EMACTxEnable(EMAC0_BASE);
 	EMACRxEnable(EMAC0_BASE);
+
+	IntPrioritySet(INT_EMAC0,2);
 	//
 	// Enable the Ethernet interrupt.
 	//

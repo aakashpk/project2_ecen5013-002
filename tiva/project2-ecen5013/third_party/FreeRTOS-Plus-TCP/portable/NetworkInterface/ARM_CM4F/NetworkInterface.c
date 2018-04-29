@@ -40,15 +40,135 @@
 #include "FreeRTOS_UDP_IP.h"
 #include "FreeRTOS_Sockets.h"
 #include "FreeRTOS_IP.h"
+#include "FreeRTOS_IP_Private.h"
 #include "NetworkBufferManagement.h"
 
 #include "driver/ethernet.h"
+
+#include "driver/leds.h"
 
 /* Demo includes. */
 #include "NetworkInterface.h"
 
 extern QueueHandle_t xPingReplyQueue;
 uint32_t ip;
+
+/* The queue used to communicate Ethernet events with the IP task. */
+extern QueueHandle_t xNetworkEventQueue;
+
+/* The semaphore used to wake the deferred interrupt handler task when an Rx
+interrupt is received. */
+
+SemaphoreHandle_t xEMACRxEventSemaphore;
+
+
+/*
+ * A deferred interrupt handler task that processes
+ */
+
+void vEMACHandlerTask( void *pvParameters )
+{
+
+    UARTprintf("\n\nIn deffered task handler\n");
+
+    size_t xDataLength,received_size;
+    const uint16_t usCRCLength = 4;
+    NetworkBufferDescriptor_t *pxNetworkBuffer;
+    IPStackEvent_t xRxEvent = { eNetworkRxEvent, NULL };
+
+
+    ( void ) pvParameters;
+    configASSERT( xEMACRxEventSemaphore );
+
+    while(1)
+    {
+        // Wait for the EMAC interrupt to indicate that another packet has been
+        //received.  The while() loop is only needed if INCLUDE_vTaskSuspend is
+        //set to 0 in FreeRTOSConfig.h.
+        while( xSemaphoreTake( xEMACRxEventSemaphore, portMAX_DELAY ) == pdFALSE );
+
+        // At least one packet has been received.
+
+           //
+          // Make sure that we own the receive descriptor.
+          //
+    if(!(g_psRxDescriptor[g_ui32RxDescIndex].ui32CtrlStatus & DES0_RX_CTRL_OWN))
+    {
+
+        //
+        // We own the receive descriptor so check to see if it contains a valid
+        // frame.
+        //
+        if(!(g_psRxDescriptor[g_ui32RxDescIndex].ui32CtrlStatus &
+        DES0_RX_STAT_ERR))
+        {
+
+            // Obtain the length, minus the CRC.  The CRC is four bytes
+            //but the length is already minus 1.
+            received_size=
+                    ((g_psRxDescriptor[g_ui32RxDescIndex].ui32CtrlStatus &
+                    DES0_RX_STAT_FRAME_LENGTH_M) >>
+                    DES0_RX_STAT_FRAME_LENGTH_S);
+
+            xDataLength = ( size_t ) received_size - ( usCRCLength - 1U );
+
+            if( xDataLength > 0U )
+            {
+                // Obtain a network buffer to pass this data into the
+                //stack.  No storage is required as the network buffer
+                //will point directly to the buffer that already holds
+                //the received data.
+                pxNetworkBuffer = pxGetNetworkBufferWithDescriptor( 0, ( TickType_t ) 0 );
+
+                if( pxNetworkBuffer != NULL )
+                {
+                    pxNetworkBuffer->pucEthernetBuffer = g_psRxDescriptor[g_ui32RxDescIndex].pvBuffer1;
+                    pxNetworkBuffer->xDataLength = xDataLength;
+                    xRxEvent.pvData = ( void * ) pxNetworkBuffer;
+
+                    // Data was received and stored.  Send a message to the IP
+                    //task to let it know.
+                    //if( xSendEventStructToIPTask( &xRxEvent, ( TickType_t ) 0 ) == pdFAIL )
+                    if( xSendEventToIPTask(&xRxEvent) == pdFAIL )
+                    {
+                        vReleaseNetworkBufferAndDescriptor( pxNetworkBuffer );
+                        iptraceETHERNET_RX_EVENT_LOST();
+                    }
+                }
+               /* else
+                {
+                    iptraceETHERNET_RX_EVENT_LOST();
+                }
+
+                iptraceNETWORK_INTERFACE_RECEIVE();*/
+            }
+
+            //
+            // Now that we are finished dealing with this descriptor, hand
+            // it back to the hardware. Note that we assume
+            // ApplicationProcessFrame() is finished with the buffer at this point
+            // so it is safe to reuse.
+            //
+            g_psRxDescriptor[g_ui32RxDescIndex].ui32CtrlStatus =
+            DES0_RX_CTRL_OWN;
+            //
+            // Move on to the next descriptor in the chain.
+            //
+            g_ui32RxDescIndex++;
+
+            if(g_ui32RxDescIndex == NUM_RX_DESCRIPTORS)
+            {
+                g_ui32RxDescIndex = 0;
+            }
+        }
+       }
+
+    }
+
+
+}
+
+
 
 //*****************************************************************************
 //
@@ -71,62 +191,17 @@ EthernetIntHandler(void)
     {
         //
         // Indicate that a packet has been received.
-        //
-        //xSemaphoreGiveFromISR( vEMACHandlerTask, NULL );
-        UARTprintf("\n\n Ethernet ISR\n");
+        //Gives sempahore to task that handles deffered processing
+        // for TCP Rx packets .
+
+        xSemaphoreGiveFromISR( xEMACRxEventSemaphore, NULL );
+
     }
 
     //portEND_SWITCHING_ISR( ulInterruptCause );
 
-/* for ref from LPC port, can be deleted once above code is working
- uint32_t ulInterruptCause;
-
-    while( ( ulInterruptCause = LPC_EMAC->IntStatus ) != 0 )
-    {
-        // Clear the interrupt.
-        LPC_EMAC->IntClear = ulInterruptCause;
-
-        // Clear fatal error conditions.  NOTE:  The driver does not clear all
-        errors, only those actually experienced.  For future reference, range
-        errors are not actually errors so can be ignored.
-        if( ( ulInterruptCause & EMAC_INT_TX_UNDERRUN ) != 0U )
-        {
-            LPC_EMAC->Command |= EMAC_CR_TX_RES;
-        }
-
-        // Unblock the deferred interrupt handler task if the event was an Rx.
-        if( ( ulInterruptCause & EMAC_INT_RX_DONE ) != 0UL )
-        {
-            xSemaphoreGiveFromISR( xEMACRxEventSemaphore, NULL );
-        }
-    }
-
-    // ulInterruptCause is used for convenience here.  A context switch is
-    //wanted, but coding portEND_SWITCHING_ISR( 1 ) would likely result in a
-    //compiler warning.
-    portEND_SWITCHING_ISR( ulInterruptCause );
- */
-
-
 }
 
-/*
- * A deferred interrupt handler task that processes
- */
-//extern
-void vEMACHandlerTask( void *pvParameters )
-{
-    UARTprintf("\n\nIn deffered task handler\n");
-
-}
-
-/* The queue used to communicate Ethernet events with the IP task. */
-extern QueueHandle_t xNetworkEventQueue;
-
-/* The semaphore used to wake the deferred interrupt handler task when an Rx
-interrupt is received. */
-
-SemaphoreHandle_t xEMACRxEventSemaphore;
 
 BaseType_t xNetworkInterfaceInitialise( void )
 {
@@ -134,47 +209,60 @@ BaseType_t xNetworkInterfaceInitialise( void )
     enable_eth0();
     xEMACRxEventSemaphore=xSemaphoreCreateBinary();
 
-    /* The handler task is created at the highest possible priority to
-    ensure the interrupt handler can return directly to it. */
-    //xTaskCreate( vEMACHandlerTask, "EMAC", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES - 1, NULL );
-
-    /* Enable the interrupt and set its priority to the minimum
-    interrupt priority.  */
-    //NVIC_SetPriority( ENET_IRQn, configMAC_INTERRUPT_PRIORITY );
-    //NVIC_EnableIRQ( ENET_IRQn );
-
     return pdPASS;
 	
 }
+
+
 BaseType_t xNetworkInterfaceOutput( NetworkBufferDescriptor_t * const pxNetworkBuffer, BaseType_t xReleaseAfterSend )
 {
-    UARTprintf("\nxNetworkInterfaceOutput called \n");
 
-    //extern void vEMACCopyWrite( uint8_t * pucBuffer, uint16_t usLength );
+    extern int32_t PacketTransmit(uint8_t *pui8Buf, int32_t i32BufLen);
 
-    //vEMACCopyWrite( pxNetworkBuffer->pucBuffer, pxNetworkBuffer->xDataLength );
+    PacketTransmit(pxNetworkBuffer->pucEthernetBuffer, pxNetworkBuffer->xDataLength);
 
+    UARTprintf("\nxNetIntOut packet length %d \n",pxNetworkBuffer->xDataLength);
+
+    // Finished with the network buffer, release the buffer
     vReleaseNetworkBufferAndDescriptor( pxNetworkBuffer );
     return pdTRUE;
 }
+
+
 void vNetworkInterfaceAllocateRAMToBuffers( NetworkBufferDescriptor_t pxNetworkBuffers[ ipconfigNUM_NETWORK_BUFFER_DESCRIPTORS ] )
 {
     UARTprintf("\vNetworkInterfaceAllocateRAMToBuffers called \n");
 }
+
+
 BaseType_t xGetPhyLinkStatus( void )
 {
     UARTprintf("\n xGetPhyLinkStatus called \n");
     return pdPASS;
 }
 
+
 void vApplicationIPNetworkEventHook( eIPCallbackEvent_t eNetworkEvent )
 {
+    char cBuffer[20];
     if(eNetworkEvent==eNetworkUp)
     {
+        // The handler task is created at the highest possible priority to
+        //ensure the interrupt handler can return directly to it.
+
+        xTaskCreate( vEMACHandlerTask, "EMAC", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES - 1, NULL );
         UARTprintf("\n\n Connected to network \n");
+
         ip=FreeRTOS_GetIPAddress();
+        /* Convert the IP address to a string then print it out. */
+        FreeRTOS_inet_ntoa( ip, cBuffer );
+        printf( "IP Address: %s\r\n", cBuffer );
+
+
         UARTprintf("\n IP setup %x\n",ip);
-        vSendPing("192.168.0.100");
+
+        //ping host machine to check working
+        //vSendPing("192.168.0.100");
     }
     else if(eNetworkEvent==eNetworkDown)
         UARTprintf("\n\n Disconnected from network \n");

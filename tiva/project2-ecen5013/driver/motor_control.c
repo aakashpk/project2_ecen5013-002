@@ -30,9 +30,10 @@ void pwm_init(void)
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
     // Setup PWM for use with PortF 0 and 1
-    GPIOPinConfigure(GPIO_PF0_M0PWM0);
+    //GPIOPinConfigure(GPIO_PF0_M0PWM0);
     GPIOPinConfigure(GPIO_PF1_M0PWM1);
-    GPIOPinTypePWM(GPIO_PORTF_BASE,GPIO_PIN_0|GPIO_PIN_1);
+    //GPIOPinTypePWM(GPIO_PORTF_BASE,GPIO_PIN_0);
+    GPIOPinTypePWM(GPIO_PORTF_BASE,GPIO_PIN_1);
 
 
     // Wait for the PWM0 module to be ready.
@@ -60,7 +61,7 @@ void pwm_init(void)
     //
     // Set the pulse width of PWM0 for a 25% duty cycle.
     //
-    PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, 100);
+    //PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, 100);
     //
     // Set the pulse width of PWM1 for a 75% duty cycle.
     //

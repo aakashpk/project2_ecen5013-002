@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
+SHELL = cmd.exe
+
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../driver/current_sensor.c \
@@ -28,20 +30,20 @@ OBJS += \
 ./driver/speed_sensor.obj 
 
 OBJS__QUOTED += \
-"driver/current_sensor.obj" \
-"driver/ethernet.obj" \
-"driver/leds.obj" \
-"driver/motor_control.obj" \
-"driver/serial_interface.obj" \
-"driver/speed_sensor.obj" 
+"driver\current_sensor.obj" \
+"driver\ethernet.obj" \
+"driver\leds.obj" \
+"driver\motor_control.obj" \
+"driver\serial_interface.obj" \
+"driver\speed_sensor.obj" 
 
 C_DEPS__QUOTED += \
-"driver/current_sensor.d" \
-"driver/ethernet.d" \
-"driver/leds.d" \
-"driver/motor_control.d" \
-"driver/serial_interface.d" \
-"driver/speed_sensor.d" 
+"driver\current_sensor.d" \
+"driver\ethernet.d" \
+"driver\leds.d" \
+"driver\motor_control.d" \
+"driver\serial_interface.d" \
+"driver\speed_sensor.d" 
 
 C_SRCS__QUOTED += \
 "../driver/current_sensor.c" \

@@ -10,11 +10,14 @@
 #include "semphr.h"
 #include "timers.h"
 
-
+// Application layer
 #include "project2_tasks.h"
 #include "NetworkInterface.h"
 
 #include "driverlib/interrupt.h"
+
+//#define USEIP
+//#define TESTIP
 
 void vApplicationStackOverflowHook(xTaskHandle *pxTask, char *pcTaskName)
 {
@@ -29,30 +32,26 @@ void vApplicationStackOverflowHook(xTaskHandle *pxTask, char *pcTaskName)
     }
 }
 
-uint32_t  g_ui32SysClock;
 
-
-
-
+#ifdef USEIP
 uint8_t pui8MACAddr[6];
 // Define the network addressing.  These parameters will be used if either
 //ipconfigUDE_DHCP is 0 or if ipconfigUSE_DHCP is 1 but DHCP auto configuration
 //failed.
-/*
 static const uint8_t ucIPAddress[ 4 ] = { 192, 168, 0, 200 };
 static const uint8_t ucNetMask[ 4 ] = { 255, 255, 255, 0 };
 static const uint8_t ucGatewayAddress[ 4 ] = { 192, 168, 0, 1 };
 
 // The following is the address of an OpenDNS server.
 static const uint8_t ucDNSServerAddress[ 4 ] = { 208, 67, 222, 222 };
-*/
+#endif
 
 
+uint32_t  g_ui32SysClock;
 QueueHandle_t xQueue1,xPingReplyQueue;
-
-xSemaphoreHandle g_logtask_Semaphore;
-
 SemaphoreHandle_t xData_Semaphore;
+SemaphoreHandle_t xUARTRxEventSemaphore;
+
 
 int main(void)
 {
@@ -62,31 +61,23 @@ int main(void)
                     SYSCTL_CFG_VCO_480), 120000000);
 
     //Initialize UART
-    UART0_Init(g_ui32SysClock,115200);
-    UART3_Init(g_ui32SysClock,115200);
+    UART0_Init(g_ui32SysClock,115200); // For console logging
+    UART3_Init(g_ui32SysClock,115200); // for UART comm with BBG
+    xUARTRxEventSemaphore=xSemaphoreCreateBinary();
 
-    UARTprintf("UART Initialized\n");
-    //
+    UARTprintf("[LOG] UART Initialized\n");
+
+    // Initialize peripherals
     ConfigureLEDs();
-
     adc_init();
     quad_encoder_init();
     pwm_init();
 
+    UARTprintf("[LOG] Peripherals Initialized\n");
+
     motor_speed(100);
 
-    xData_Semaphore=xSemaphoreCreateMutex();
-
-    //g_logtask_Semaphore = xSemaphoreCreateMutex();
-
-/*
-    UARTprintf("%d\n",sizeof(packet_header_t));
-
-    if(sizeof(packet_header_t)!=offsetof(packet_data_t,value))
-        UARTprintf("True\n");
-    else
-        UARTprintf("Nope\n");
-
+#ifdef USEIP
     xNetworkInterfaceInitialise();
 
     uint32_t iptoset;
@@ -102,11 +93,13 @@ int main(void)
 
     xPingReplyQueue=xQueueCreate( 10,sizeof(NetworkBufferDescriptor_t));
 
+#endif
 
 
+#ifndef TESTIP
 
-    //xQueue1=xQueueCreate(2, sizeof(TickType_t) );
-*/
+    xData_Semaphore=xSemaphoreCreateMutex();
+
 
     if(motor_task_create() != 0)
     {
@@ -141,7 +134,7 @@ int main(void)
 
     if(logger_task_create() != 0)
     {
-        UARTprintf("\n\n Current_measure_task not Initialized\n");
+        UARTprintf("\n\n Logger task not Initialized\n");
 
         while(1)
         {
@@ -149,22 +142,25 @@ int main(void)
     }
 
 
+    if(log_receive_task_create() != 0)
+    {
+        UARTprintf("\n\n Log RX defered ISR task not Initialized\n");
+
+        while(1)
+        {
+        }
+    }
+
+#endif
+
     vTaskStartScheduler();
 
     UARTprintf("\n\nError, Scheduler returned\n");
 
-   int i=0;
 
     while(1)
         {
 
-
-            if(i==1000)
-            {
-                UARTCharPut(UART3_BASE,'A');
-                i=0;
-            }
-            i++;
         }
 
 }
