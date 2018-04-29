@@ -100,7 +100,9 @@ typedef struct
     float i_value;
     float d_value;
 
-} motor_values_t;
+    float current;
+
+}motor_values_t;
 
 typedef struct
 {
@@ -134,8 +136,6 @@ typedef struct
         // this address for the generic case, and avoids using named union,
         // which makes children more annoying to access.
     } ;
-
-    uint32_t checksum;
 
 } packet_data_t;
 
