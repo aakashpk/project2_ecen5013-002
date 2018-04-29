@@ -34,8 +34,7 @@ can setup a flush interval for performance customization
 
 #include "packet_data_type.h"
 
-// Todo - consolidate write_flush and fwrite_check
-void write_flush(FILE *fp, void *data, size_t len, bool force_flush)
+void fwrite_flush(FILE *fp, void *data, size_t len, bool force_flush)
 {
     assert(1 == fwrite(data, len, 1, fp));
 
@@ -67,16 +66,6 @@ FILE *fopen_dir_check(const char *dir, const char *name, char *flags)
     }
 
     return fopen_check(path, flags);
-}
-
-size_t fwrite_check(const void *ptr, size_t size, size_t nmemb, FILE *stream)
-{
-    size_t elements_written = fwrite(ptr, size, nmemb, stream);
-    if (nmemb != elements_written)
-    {
-        printf("fwrite could not write all data\n");
-    }
-    return elements_written;
 }
 
 uint8_t get_checksum(uint8_t* buf, size_t len, uint8_t seed)
@@ -113,7 +102,7 @@ typedef struct
 // data output write functions
 void data_output_write_file(data_output_t *output, char* data, size_t len)
 {
-    fwrite_check(data, len, 1, output->output_fp);
+    fwrite_flush(output->output_fp, data, len, 0); // no flush here
 }
 
 void data_output_write_serial(data_output_t *output, char* data, size_t len)
@@ -124,6 +113,22 @@ void data_output_write_serial(data_output_t *output, char* data, size_t len)
 void data_output_write_socket(data_output_t *output, char* data, size_t len)
 {
     // todo socket write
+}
+
+// data output flush functions
+void data_output_flush_file(data_output_t *output)
+{
+    assert(0 == fflush(output->output_fp));
+}
+
+void data_output_flush_serial(data_output_t *output)
+{
+    // todo serial flush
+}
+
+void data_output_flush_socket(data_output_t *output)
+{
+    // todo socket flush
 }
 
 // data output open functions
@@ -159,41 +164,18 @@ void data_output_close_socket(data_output_t *output)
     // todo socket close
 }
 
-// Should not make function pointers order dependent - should index by enum
-/*
-// write function pointers
-void (*data_output_write_func[]) (data_output_t *output, char* data, size_t len) = [
-    data_output_write_file,
-    data_output_write_serial,
-    data_output_write_socket
-];
-
-// open function pointers
-void (*data_output_open_func[]) (data_output_t *output, char* name) = [
-    data_output_open_file,
-    data_output_open_serial,
-    data_output_open_socket
-];
-
-// close function pointers
-void (*data_output_close[]) (data_output_t *output) = [
-    data_output_close_file,
-    data_output_close_serial,
-    data_output_close_socket
-];
-*/
-
 void data_output_write(data_output_t *output, char* data, size_t len)
 {
-    // Todo - convert enum arrays to named initializer
-    // https://eli.thegreenplace.net/2011/02/15/array-initialization-with-enum-indices-in-c-but-not-c
-
-
     // write function pointers
-    void (*data_output_write_func[NUM_OUTPUT_MODES])(data_output_t *output, char *data, size_t len);
-    data_output_write_func[OUTPUT_TO_FILE] = data_output_write_file;
-    data_output_write_func[OUTPUT_TO_SERIAL] = data_output_write_serial;
-    data_output_write_func[OUTPUT_TO_SOCKET] = data_output_write_socket;
+    static void (*const data_output_write_func[])(data_output_t * output, char *data, size_t len) = {
+        [OUTPUT_TO_FILE] = data_output_write_file,
+        [OUTPUT_TO_SERIAL] = data_output_write_serial,
+        [OUTPUT_TO_SOCKET] = data_output_write_socket,
+    };
+
+    // Question: Not sure why static must be next to void, rather than next to const above.
+    // Seems like that would result in an array of "static void functions",
+    // rather than a "static array" of "void functions".
 
     data_output_write_func[output->current_output_mode](output, data, len);
 }
@@ -201,10 +183,11 @@ void data_output_write(data_output_t *output, char* data, size_t len)
 void data_output_open(data_output_t *output, char* name)
 {
     // open function pointers
-    void (*data_output_open_func[NUM_OUTPUT_MODES])(data_output_t *output, char *name);
-    data_output_open_func[OUTPUT_TO_FILE] = data_output_open_file;
-    data_output_open_func[OUTPUT_TO_SERIAL] = data_output_open_serial;
-    data_output_open_func[OUTPUT_TO_SOCKET] = data_output_open_socket;
+    static void (*const data_output_open_func[])(data_output_t * output, char *name) = {
+        [OUTPUT_TO_FILE] = data_output_open_file,
+        [OUTPUT_TO_SERIAL] = data_output_open_serial,
+        [OUTPUT_TO_SOCKET] = data_output_open_socket,
+    };
 
     data_output_open_func[output->current_output_mode](output, name);
 }
@@ -212,15 +195,26 @@ void data_output_open(data_output_t *output, char* name)
 void data_output_close(data_output_t *output)
 {
     // close function pointers
-    void (*data_output_close_func[NUM_OUTPUT_MODES])(data_output_t *output);
-    data_output_close_func[OUTPUT_TO_FILE] = data_output_close_file;
-    data_output_close_func[OUTPUT_TO_SERIAL] = data_output_close_serial;
-    data_output_close_func[OUTPUT_TO_SOCKET] = data_output_close_socket;
+    static void (*const data_output_close_func[])(data_output_t * output) = {
+        [OUTPUT_TO_FILE] = data_output_close_file,
+        [OUTPUT_TO_SERIAL] = data_output_close_serial,
+        [OUTPUT_TO_SOCKET] = data_output_close_socket,
+    };
 
     data_output_close_func[output->current_output_mode](output);
 }
 
-// Todo - may want to add flush function
+void data_output_flush(data_output_t *output)
+{
+    // flush function pointers
+    static void (*const data_output_flush_func[])(data_output_t * output) = {
+        [OUTPUT_TO_FILE] = data_output_flush_file,
+        [OUTPUT_TO_SERIAL] = data_output_flush_serial,
+        [OUTPUT_TO_SOCKET] = data_output_flush_socket,
+    };
+
+    data_output_flush_func[output->current_output_mode](output);
+}
 
 
 /* Todo - move data_output to its own file
@@ -273,6 +267,10 @@ void write_packet(data_output_t *output, packet_data_t *data)
     checksum = get_checksum((uint8_t*)&data->header, sizeof(data->header), checksum);
     checksum = get_checksum((uint8_t*)&data->motor_values, payload_len, checksum);
     data_output_write(output, (char*)&checksum, sizeof(checksum));
+
+    // Todo - may want to let flush be optional here,
+    // or with reduced flush rate
+    data_output_flush(output);
 }
 
 void *datagen_task(void *ptr)
@@ -441,23 +439,23 @@ void write_dirfile_entry(dir_handles_t *handle,
     // -------------- Write all structs to files -----------------
     // could use sizeof for each field instead of magic number 4, but that gets too busy
 
-    write_flush(handle->fp_speed, (void *)&motor_values->speed, 4, force_flush);
-    write_flush(handle->fp_setpoint, (void *)&motor_values->setpoint, 4, force_flush);
-    write_flush(handle->fp_error, (void *)&motor_values->error, 4, force_flush);
+    fwrite_flush(handle->fp_speed, (void *)&motor_values->speed, 4, force_flush);
+    fwrite_flush(handle->fp_setpoint, (void *)&motor_values->setpoint, 4, force_flush);
+    fwrite_flush(handle->fp_error, (void *)&motor_values->error, 4, force_flush);
 
-    write_flush(handle->fp_pwm_output, (void *)&motor_values->pwm_output, 4, force_flush);
+    fwrite_flush(handle->fp_pwm_output, (void *)&motor_values->pwm_output, 4, force_flush);
 
-    write_flush(handle->fp_p_value, (void *)&motor_values->p_value, 4, force_flush);
-    write_flush(handle->fp_i_value, (void *)&motor_values->i_value, 4, force_flush);
-    write_flush(handle->fp_d_value, (void *)&motor_values->d_value, 4, force_flush);
+    fwrite_flush(handle->fp_p_value, (void *)&motor_values->p_value, 4, force_flush);
+    fwrite_flush(handle->fp_i_value, (void *)&motor_values->i_value, 4, force_flush);
+    fwrite_flush(handle->fp_d_value, (void *)&motor_values->d_value, 4, force_flush);
 
-    write_flush(handle->fp_kp, (void *)&pid_param->kp, 4, force_flush);
-    write_flush(handle->fp_ki, (void *)&pid_param->ki, 4, force_flush);
-    write_flush(handle->fp_kd, (void *)&pid_param->kd, 4, force_flush);
+    fwrite_flush(handle->fp_kp, (void *)&pid_param->kp, 4, force_flush);
+    fwrite_flush(handle->fp_ki, (void *)&pid_param->ki, 4, force_flush);
+    fwrite_flush(handle->fp_kd, (void *)&pid_param->kd, 4, force_flush);
 
-    write_flush(handle->fp_auto_tune, (void *)&pid_config->auto_tune, 4, force_flush);
-    write_flush(handle->fp_update_period_ns, (void *)&pid_config->update_period_ns, 4, force_flush);
-    write_flush(handle->fp_windup_limit, (void *)&pid_config->windup_limit, 4, force_flush);
+    fwrite_flush(handle->fp_auto_tune, (void *)&pid_config->auto_tune, 4, force_flush);
+    fwrite_flush(handle->fp_update_period_ns, (void *)&pid_config->update_period_ns, 4, force_flush);
+    fwrite_flush(handle->fp_windup_limit, (void *)&pid_config->windup_limit, 4, force_flush);
 }
 
 int main(void)
@@ -480,7 +478,7 @@ int main(void)
     char input_path[] = "combo_structs";
 
 #define GEN_ENABLE 1
-#define GEN_BLOCK 1
+#define GEN_BLOCK 0
 #if GEN_ENABLE
     // datagen for testing
     pthread_t datagen_thread;
@@ -544,15 +542,6 @@ int main(void)
             return -1;
         }
 
-/*
-        printf("read %u bytes\n", bytes_read);
-        for (int i = 0; i < bytes_read; i++)
-        {
-            printf("0x%x\n", rx_buf[i]);
-        }
-        printf("read %u bytes\n", bytes_read);
-*/
-
         rx_buf_bytes += bytes_read;
 
         size_t bytes_consumed = 0;
@@ -608,17 +597,19 @@ int main(void)
 
             uint8_t checksum = 0;
 
-            // error check for large enough packet
+            // Error check for large enough packet.
+            // Magic num not considered here, since
+            // bytes_consumed and bytes_remaining advanced earlier
             size_t required_packet_size = sizeof(packet_header_t) +
                                           packet_payload_size[packet_type] +
                                           sizeof(checksum);
 
-            // bytes_consumed advanced earlier, but
             if (bytes_remaining < required_packet_size)
             {
                 // not enough bytes
-                printf("not enough bytes for packet type %d. Required %zu, available %zu\n",
-                       packet_type, required_packet_size, bytes_remaining);
+                // No need to print this as error, will resume with rest of packet later
+                //printf("not enough bytes for packet type %d. Required %zu, available %zu\n",
+                //       packet_type, required_packet_size, bytes_remaining);
 
                 // Need to undo consuming magic_num bytes for re-read later - kinda hacky
                 bytes_consumed -= sizeof(magic_num);
@@ -679,8 +670,6 @@ int main(void)
 
                     printf("wrote motor values, speed %f\n", motor_values.speed);
 
-                    //bytes_consumed += sizeof(packet->header) + sizeof(packet->motor_values) + sizeof(checksum);
-                    // same as above
                     bytes_consumed += required_packet_size;
 
                     // Todo - how to deal with synchronizing data across files?
