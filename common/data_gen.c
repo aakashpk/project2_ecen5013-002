@@ -1,4 +1,7 @@
 #include "packet_writer.h"
+#include <stdlib.h>
+#include <unistd.h>
+#include <limits.h>
 
 void *datagen_task(void *ptr)
 {

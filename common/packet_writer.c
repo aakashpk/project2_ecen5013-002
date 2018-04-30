@@ -1,15 +1,5 @@
-#include "packet_data_types.h"
-#include "data_output.h"
+#include "packet_writer.h"
 #include "utilities.h"
-
-/* Assuming caller populates all required fields,
-although could absorb some common functionality here,
-such as length, type, another timestamp, and checksum.
-Biggest challenge is lack of timestamp when sending structs to queue.
-Can optimize later, may help to learn more inner workings of freertos queues
-Somewhat risky to assume valid data here.
-Would also ideally like to send header and data separately to avoid padding risk.
-*/
 
 void write_packet(data_output_t *output, packet_data_t *data)
 {

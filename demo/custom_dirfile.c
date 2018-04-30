@@ -30,7 +30,7 @@ can setup a flush interval for performance customization
 #include <limits.h>
 #include <pthread.h>
 #include <fcntl.h>
-#include<sys/stat.h>
+#include <sys/stat.h>
 
 #include "packet_data_type.h"
 
@@ -75,6 +75,14 @@ int main(void)
 #endif // GEN_ENABLE
 
     // Todo - call packet parser function/task
+    pthread_t packet_parser_thread;
+
+    int retval;
+    if ((retval = pthread_create(&packet_parser_thread, NULL, parse_packets, (void *)input_path)))
+    {
+        printf("pthread create issue %s\n", strerror(retval));
+        abort();
+    }
 
     // Todo - task to setup ncurses UI in this or separate task, and write commands back to source of structs stream
     // Printf logs need to be replaced with log to file. Will need to pass this path into tasks.

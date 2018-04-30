@@ -1,12 +1,12 @@
+#include "packet_parser.h"
 #include "dirfile_writer.h"
+#include "utilities.h"
 
-typedef struct
-{
-    char* input_path;
-    char* output_dir;
-    // Todo - should configure read mode
-    // hopefully output through same interface is independent - should be allowed
-} packet_parser_params_t;
+//#include <sys/types.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
 void *packet_parser_task(void* ptr)
 {
@@ -29,7 +29,7 @@ void *packet_parser_task(void* ptr)
     #define RX_BUF_SIZE (1 << 12) //4kB
     static unsigned char rx_buf[RX_BUF_SIZE];
 
-    ssize_t bytes_read;
+    size_t bytes_read;
     size_t rx_buf_bytes = 0;
     // Read() is blocking
     // Zero bytes read means eof / pipe closed by writer
@@ -39,7 +39,7 @@ void *packet_parser_task(void* ptr)
         if (bytes_read == -1)
         {
             perror("error reading pipe");
-            return -1;
+            abort();
         }
 
         rx_buf_bytes += bytes_read;

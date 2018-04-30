@@ -1,12 +1,8 @@
-void fwrite_flush(FILE *fp, void *data, size_t len, bool force_flush)
-{
-    assert(1 == fwrite(data, len, 1, fp));
+#include "file_helper.h"
 
-    if (force_flush)
-    {
-        assert(0 == fflush(fp));
-    }
-}
+#include <sys/stat.h>
+#include <string.h>
+
 
 FILE *fopen_check(const char *path, char *flags)
 {

@@ -1,4 +1,7 @@
+#include <stddef.h> // size_t
 #include "packet_data_type.h"
+
+// may be able to just put const in header
 
 // extern (implicit with const)
 const uint32_t magic_num = 0xFEEDCAFE;

@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "getdata.h": "c",
+        "packet_data_type.h": "c",
+        "data_output.h": "c",
+        "dirfile_writer.h": "c",
+        "file_helper.h": "c",
+        "data_gen.h": "c",
+        "packet_writer.h": "c",
+        "packet_parser.h": "c",
+        "fcntl.h": "c",
+        "stdlib.h": "c"
+    }
+}

@@ -3,68 +3,14 @@
  *
  *  Created on: Apr 23, 2018
  *      Author: Aakash
- *       Author: Miles
+ *      Author: Miles
  */
 
-/**  NOTES FROM 22 April
- * 32-bit float for everything
-
-struct PID parameters (somewhat static, unless updated or auto tuned)
-// standalone version of this sent from GUI to TIVA
-Kp
-Kd
-Ki
-
-struct PID status
-// TIVA -> GUI
-Setpoint
-// Desired RPS
-Measured
-// Observed RPS
-Error
-// Measured - Setpoint
-Output
-// PWM on-time (assuming period stays the same)
-// 8-bit int should be fine, but 32-bit more friendly for architecture and alignment
-// if we want float version, we can just add components in gui
-Components
-// these are constantly changing based on current and previous errors
-// The sum of all of these is equal to output
-P
-Accumulated I
-D
-struct PID parameters
-// shouldn�t change in most cases
-// might be somewhat redundant for non-auto-tuning
-// but still good if connecting to pre-configured system
-// Could just limit struct
-
-struct heartbeat
-    // no payload - just a type
-
-struct other_configuration
-auto-tuning enabled
-update rate
-wind-up integration limit
-
-struct packet
-type
-length
-time?
-// Not required for kst time series data, but could be nice if
-union payload
-struct pid_parameters update // GUI -> TIVA
-struct other configuration
-struct pid status // TIVA -> GUI
-// struct heartbeat // either direction, no payload
- *
- */
-
-#ifndef PACKET_DATA_TYPE_H_
-#define PACKET_DATA_TYPE_H_
+#pragma once
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 typedef enum {
     UNINITIALISED,
@@ -76,6 +22,7 @@ typedef enum {
 
 } packet_type_t;
 
+// todo - take these out of packet comms
 extern char *packet_type_strings[];
 
 typedef struct
@@ -139,4 +86,8 @@ typedef struct
 
 } packet_data_t;
 
-#endif /* PACKET_DATA_TYPE_H_ */
+// extern (implicit with const)
+extern const uint32_t magic_num;
+
+// remove stddef above if this needs to move
+extern const size_t packet_payload_size[NUM_PACKET_TYPES];
