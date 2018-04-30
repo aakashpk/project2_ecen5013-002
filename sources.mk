@@ -1,5 +1,6 @@
 #MAIN_SOURCE=src/main.c
-MAIN_SOURCE=bbb/src/main_tester.c
+#MAIN_SOURCE=bbb/src/main_tester.c
+MAIN_SOURCE=bbb/src/serial.c
 
 COMMON_SOURCES= \
 			bbb/src/dirfile_writer.c \

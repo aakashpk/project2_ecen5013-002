@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <string.h>
 
+// Todo - this should be callback based for most flexibility and reuse among platforms
+
 void *packet_parser_task(void* ptr)
 {
     packet_parser_params_t *param = (packet_parser_params_t *)ptr;

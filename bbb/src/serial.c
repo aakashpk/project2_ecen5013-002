@@ -1,9 +1,9 @@
 #include "serial.h"
-#include "packet_data_type.h"
-#include "packet_comms.h"
+//#include "packet_data_type.h"
+//#include "packet_comms.h"
 
 
-int open_port(void)
+int open_port(char* port_name)
 {
 	struct termios tio;
   	int tty_fd; /* File descriptor for the port */
@@ -15,7 +15,7 @@ int open_port(void)
 	tio.c_cc[VTIME]=5;
 
 	//tty_fd=open(UART4, O_RDWR | O_NONBLOCK);        // O_NONBLOCK might override VMIN and VTIME, so read() may return immediately.
-	tty_fd = open(UART_TEST, O_RDWR );// | O_NOCTTY | O_NDELAY);
+	tty_fd = open(port_name, O_RDWR );// | O_NOCTTY | O_NDELAY);
 	if (tty_fd < 0)
 	{
 		perror("Unable to open ");
@@ -34,6 +34,7 @@ int open_port(void)
 	return (tty_fd);
 }
 
+/*
 void packet_receive(int port)
 {
 	char magic;
@@ -49,14 +50,27 @@ void packet_receive(int port)
 	read(port,&length,4);
     read(port,&my_packet,(length-4));
     print_data_packet(&my_packet);
-
 }
+*/
 
 int main()
 {
-	int port=open_port();
+	int port=open_port(UART4);
 
+	unsigned char c;
+	while(1)
+	{
+		if (read(port, &c, 1))
+		{
+			printf("0x%x\n", c);
+		}
+		else
+		{
+			printf(".");
+		}
+	}
 
+#if 0
 	char a=0xab,b=0xFE;
 	uint32_t length;
 	int m;
@@ -98,7 +112,9 @@ int main()
 		print_data_packet(&data);
 		sleep(2);
 
-	}
+}
+#endif
+
 	close(port);
 	printf("Port Closed \n");
 }
