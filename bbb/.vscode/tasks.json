@@ -6,7 +6,7 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "gcc -g common/*.c -Icommon -lgetdata -lpthread -Werror -Wfatal-errors",
+            "command": "make clean build",
             "problemMatcher": [
                 "$gcc"
             ],
