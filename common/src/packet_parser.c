@@ -1,6 +1,8 @@
 #include "packet_parser.h"
 #include "dirfile_writer.h"
 #include "utilities.h"
+#include "data_output.h"
+#include "file_helper.h"
 
 //#include <sys/types.h>
 #include <fcntl.h>
@@ -12,6 +14,19 @@ void *packet_parser_task(void* ptr)
 {
     packet_parser_params_t *param = (packet_parser_params_t *)ptr;
 
+/*
+    // Not ready for this yet
+    data_output_t output; // should actually be input
+    output.current_output_mode = OUTPUT_TO_FILE;
+*/
+
+    //data_ouput_open()
+    //size_t data_output_read(data_output_t *output, char* data, size_t len);
+
+    // try with fopen check first
+    FILE *input_fp = fopen_check(param->input_path, "r");
+
+/*
     // Todo - convert open() and read() to support all modes (serial and socket)
     int input_fd;
     if (-1 == (input_fd = open(param->input_path, O_RDONLY)))
@@ -19,6 +34,7 @@ void *packet_parser_task(void* ptr)
         perror("error opening file");
         abort();
     }
+*/
 
     // Open dirfile output
     dir_handles_t dir_handles;
@@ -34,7 +50,9 @@ void *packet_parser_task(void* ptr)
     // Read() is blocking
     // Zero bytes read means eof / pipe closed by writer
     // Appends to partially filled buffer to account for partial packet writes / reads
-    while ((bytes_read = read(input_fd, rx_buf + rx_buf_bytes, RX_BUF_SIZE - rx_buf_bytes)))
+    //while ((bytes_read = read(input_fd, rx_buf + rx_buf_bytes, RX_BUF_SIZE - rx_buf_bytes)))
+    //fread(ptr, size, n, stream)
+    while ((bytes_read = fread(rx_buf + rx_buf_bytes, 1, RX_BUF_SIZE - rx_buf_bytes, input_fp)))
     {
         if (bytes_read == -1)
         {
@@ -204,6 +222,9 @@ void *packet_parser_task(void* ptr)
     }
 
     printf("read zero bytes (EOF) - main loop exiting\n");
+
+    //close(input_fd);
+    fclose(input_fp);
 
     close_dirfile(&dir_handles);
 

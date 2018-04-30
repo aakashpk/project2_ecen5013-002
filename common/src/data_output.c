@@ -1,6 +1,24 @@
 #include "data_output.h"
 #include "file_helper.h"
 
+// data output read functions
+size_t data_output_read_file(data_output_t *output, char* data, size_t len)
+{
+    return fread(data, 1, len, output->output_fp);
+}
+
+size_t data_output_read_serial(data_output_t *output, char* data, size_t len)
+{
+    // todo serial read
+    return 0;
+}
+
+size_t data_output_read_socket(data_output_t *output, char* data, size_t len)
+{
+    // todo socket read
+    return 0;
+}
+
 // data output write functions
 void data_output_write_file(data_output_t *output, char* data, size_t len)
 {
@@ -66,6 +84,18 @@ void data_output_close_serial(data_output_t *output)
 void data_output_close_socket(data_output_t *output)
 {
     // todo socket close
+}
+
+size_t data_output_read(data_output_t *output, char* data, size_t len)
+{
+    // read function pointers
+    static size_t (*const data_output_read_func[])(data_output_t * output, char *data, size_t len) = {
+        [OUTPUT_TO_FILE] = data_output_read_file,
+        [OUTPUT_TO_SERIAL] = data_output_read_serial,
+        [OUTPUT_TO_SOCKET] = data_output_read_socket,
+    };
+
+    return data_output_read_func[output->current_output_mode](output, data, len);
 }
 
 void data_output_write(data_output_t *output, char* data, size_t len)

@@ -13,3 +13,11 @@ const size_t packet_payload_size[] = {
     [PID_PARAMETERS] = sizeof(pid_param_t),
     [PID_CONFIGUARTION] = sizeof(pid_config_t),
 };
+
+const char *packet_type_strings[] = {
+    "UNINITIALISED",
+    "HEARTBEAT",
+    "MOTOR_VALUES",
+    "PID_PARAMETERS",
+    "PID_CONFIGUARTION",
+};

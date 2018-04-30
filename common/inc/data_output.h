@@ -24,6 +24,8 @@ typedef struct
     };
 } data_output_t;
 
+size_t data_output_read(data_output_t *output, char* data, size_t len);
+
 void data_output_write(data_output_t *output, char* data, size_t len);
 
 void data_output_open(data_output_t *output, char* name);
@@ -31,4 +33,3 @@ void data_output_open(data_output_t *output, char* name);
 void data_output_close(data_output_t *output);
 
 void data_output_flush(data_output_t *output);
-

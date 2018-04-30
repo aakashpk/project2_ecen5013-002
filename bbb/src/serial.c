@@ -1,19 +1,11 @@
-#include "my_serial.h"
+#include "serial.h"
 #include "packet_data_type.h"
 #include "packet_comms.h"
-
-char *packet_type_strings[] =
-    { "UNINITIALISED",
-      "HEARTBEAT",
-      "MOTOR_VALUES",
-      "PARAMETERS",
-      "CONFIGUARTION",
-    };
 
 
 int open_port(void)
 {
-	struct termios tio;	
+	struct termios tio;
   	int tty_fd; /* File descriptor for the port */
 	tio.c_iflag=0;
 	tio.c_oflag=0;
@@ -38,16 +30,16 @@ int open_port(void)
 
 	//else
 		//fcntl(fd, F_SETFL, 0);
-	
+
 	return (tty_fd);
 }
 
 void packet_receive(int port)
 {
 	char magic;
-	size_t length; 
+	size_t length;
 	packet_data_t my_packet;
-	
+
 	while(magic!=0xFE)
 	{
 		read(port,&magic,1);
@@ -81,7 +73,7 @@ int main()
 	{
 
 		//packet_receive(port);
-		
+
 		/*
 		read(port,&magic,1);
 		printf("%x ",magic);
@@ -90,13 +82,13 @@ int main()
 		if(ret<0) perror("Not flushed");
 		*/
 
-		
+
 		length=get_heartbeat(&data);
 		//printf("read try\n");
 		//m=read(port,&length,4);
 		//read(port,((&data)+sizeof(size_t)),length-sizeof(size_t));
-		
-		
+
+
 		//if(m>0) printf("%c",a);
 		//else perror("read error");
 		//write(port,&b, 1);b++;write(port,"\n\r", 2);
@@ -105,7 +97,7 @@ int main()
 		write(port,&data, length);
 		print_data_packet(&data);
 		sleep(2);
-		
+
 	}
 	close(port);
 	printf("Port Closed \n");
@@ -117,7 +109,7 @@ int main()
 /*
 int main(int argc,char** argv)
 {
-        
+
         struct termios stdio;
         int tty_fd;
         fd_set rdset;

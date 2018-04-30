@@ -22,9 +22,6 @@ typedef enum {
 
 } packet_type_t;
 
-// todo - take these out of packet comms
-extern char *packet_type_strings[];
-
 typedef struct
 {
     uint32_t length; // Not required, since we can derrive length from packet type.
@@ -91,3 +88,5 @@ extern const uint32_t magic_num;
 
 // remove stddef above if this needs to move
 extern const size_t packet_payload_size[NUM_PACKET_TYPES];
+
+extern const char *packet_type_strings[NUM_PACKET_TYPES];

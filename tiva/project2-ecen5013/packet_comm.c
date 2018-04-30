@@ -20,6 +20,7 @@ volatile comm_hw_t comm_hw_used = TCP;
 
 Socket_t xSocket=0; // To be changed to extern, only to remove error now
 
+/*
 char *packet_type_strings[] =
     { "UNINITIALISED",
       "HEARTBEAT",
@@ -27,6 +28,7 @@ char *packet_type_strings[] =
       "PARAMETERS",
       "CONFIGUARTION",
     };
+*/
 
 
 int packet_send(packet_type_t type, packet_data_t * packet)
