@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}",
-                "${workspaceFolder}/../common",
+                "${workspaceFolder}/bbb/inc",
+                "${workspaceFolder}/common/inc",
                 "/usr/include/c++/7",
                 "/usr/include/x86_64-linux-gnu/c++/7",
                 "/usr/include/c++/7/backward",
@@ -19,7 +20,8 @@
             "browse": {
                 "path": [
                     "${workspaceFolder}",
-                    "${workspaceFolder}/../common",
+                    "${workspaceFolder}/bbb",
+                    "${workspaceFolder}/common",
                     "/usr/include/c++/7",
                     "/usr/include/x86_64-linux-gnu/c++/7",
                     "/usr/include/c++/7/backward",

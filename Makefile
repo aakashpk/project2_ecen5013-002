@@ -9,8 +9,8 @@ TARGET=project2
 CC=gcc
 CSTD=gnu99
 
-INCLUDE=-I./inc\
-	-I./../common/inc
+INCLUDE=-I./bbb/inc\
+	-I./common/inc
 
 CFLAGS=-std=$(CSTD)\
 	-lpthread\
@@ -93,6 +93,6 @@ and runs them
 	$(TESTFLAGS)
 
 clean:
-	rm -f src/*.o test/*.o ../common/src/*.o
+	rm -f bbb/src/*.o bbb/test/*.o common/src/*.o
 	rm -f $(TEST_TARGETS) $(TARGET) client
 

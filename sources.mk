@@ -1,14 +1,14 @@
 #MAIN_SOURCE=src/main.c
-MAIN_SOURCE=src/main_tester.c
+MAIN_SOURCE=bbb/src/main_tester.c
 
 COMMON_SOURCES= \
-			src/dirfile_writer.c \
-			../common/src/data_gen.c \
-			../common/src/data_output.c \
-			../common/src/file_helper.c \
-			../common/src/packet_parser.c \
-			../common/src/packet_writer.c \
-			../common/src/packet_data_type.c
+			bbb/src/dirfile_writer.c \
+			common/src/data_gen.c \
+			common/src/data_output.c \
+			common/src/file_helper.c \
+			common/src/packet_parser.c \
+			common/src/packet_writer.c \
+			common/src/packet_data_type.c
 #			src/socketserver.c \
 #			src/packet_comms.c \
 
