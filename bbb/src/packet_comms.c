@@ -2,7 +2,8 @@
  * @brief 
  * 
  * @file packet_comms.c
- * @author your name
+ * @author Aakash
+ * @author Miles
  * @date 2018-04-28
  */
 #include "packet_comms.h"

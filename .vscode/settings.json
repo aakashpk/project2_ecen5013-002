@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "packet_data_type.h": "c",
+        "packet_comms.h": "c"
+    }
+}

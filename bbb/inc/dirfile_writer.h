@@ -1,3 +1,11 @@
+/**
+ * @brief 
+ * 
+ * @file dirfile_writer.h
+ * @author Aakash
+ * @author Miles
+ * @date 2018-04-29
+ */
 #pragma once
 
 #include <stdio.h>
@@ -25,10 +33,30 @@ typedef struct
     FILE *fp_windup_limit;
 } dir_handles_t;
 
+/**
+ * @brief Create a dirfile object
+ * 
+ * @param handle 
+ * @param dir 
+ */
 void create_dirfile(dir_handles_t *handle, char* dir);
 
+/**
+ * @brief 
+ * 
+ * @param handle 
+ */
 void close_dirfile(dir_handles_t *handle);
 
+/**
+ * @brief 
+ * 
+ * @param handle 
+ * @param motor_values 
+ * @param pid_param 
+ * @param pid_config 
+ * @param flush_interval 
+ */
 void write_dirfile_entry(dir_handles_t *handle,
                          motor_values_t *motor_values,
                          pid_param_t *pid_param,

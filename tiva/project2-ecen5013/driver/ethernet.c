@@ -3,6 +3,7 @@
  *
  *  Created on: Apr 22, 2018
  *      Author: Aakash
+ *      Author: Miles
  */
 
 #include "driver/ethernet.h"
@@ -145,8 +146,8 @@ PacketTransmit(uint8_t *pui8Buf, int32_t i32BufLen)
     DES0_TX_CTRL_INTERRUPT | DES0_TX_CTRL_IP_ALL_CKHSUMS |
     DES0_TX_CTRL_CHAINED | DES0_TX_CTRL_OWN);
     //
-    // Tell the DMA to reacquire the descriptor now that we’ve filled it in.
-    // This call is benign if the transmitter hasn’t stalled and checking
+    // Tell the DMA to reacquire the descriptor now that weï¿½ve filled it in.
+    // This call is benign if the transmitter hasnï¿½t stalled and checking
     // the state takes longer than just issuing a poll demand so we do this
     // for all packets.
     //
@@ -184,7 +185,7 @@ InitDescriptors(uint32_t ui32Base)
     }
     //
     // Initialize each of the receive descriptors. We clear the OWN bit here
-    // to make sure that the receiver doesn’t start writing anything
+    // to make sure that the receiver doesnï¿½t start writing anything
     // immediately.
     //
     for(ui32Loop = 0; ui32Loop < NUM_RX_DESCRIPTORS; ui32Loop++)

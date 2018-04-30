@@ -42,14 +42,39 @@
 //
 //*****************************************************************************
 
+/**
+ * @brief 
+ * 
+ * @return uint32_t 
+ */
 uint32_t motor_task_create(void);
 
+/**
+ * @brief 
+ * 
+ * @return uint32_t 
+ */
 uint32_t speed_measure_task_create(void);
 
+/**
+ * @brief 
+ * 
+ * @return uint32_t 
+ */
 uint32_t current_measure_task_create(void);
 
+/**
+ * @brief 
+ * 
+ * @return uint32_t 
+ */
 uint32_t logger_task_create(void);
 
+/**
+ * @brief 
+ * 
+ * @return uint32_t 
+ */
 uint32_t log_receive_task_create(void);
 
 #endif // __PROJECT2_TASKS_H__

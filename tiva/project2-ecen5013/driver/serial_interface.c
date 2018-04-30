@@ -3,6 +3,7 @@
  *
  *  Created on: Apr 23, 2018
  *      Author: aakash
+ *      Author: Miles
  */
 
 #include "driver/serial_interface.h"
@@ -101,6 +102,52 @@ size_t uart_get_n(void * src_ptr, size_t len)
     return len;
 }
 
+size_t uart_fill_buffer(void *buffer, size_t max_length)
+{
+    size_t i;
+    unsigned char * temp;
+    temp= (unsigned char *)buffer;
+
+    while (!UARTCharsAvail(DATA_UART))
+    {
+        // Spin here until character is available
+    }
+
+    while (UARTCharsAvail(DATA_UART))
+    {
+        if(i<max_length)
+        {
+            *(temp+i)=UARTCharGet(DATA_UART);
+        }
+        else
+        {
+            return i;
+        }
+    }
+
+    return i;
+}
+
+/*
+ *         if(UARTCharGet(UART3_BASE)==0xFE)
+        {
+            LEDON(LED1); // UART receive activity
+            LEDOFF(LED2);
+
+            uart_get_n(&length,4);
+            uart_get_n(&my_packet,(length-4));
+
+            //UARTprintf("ts: %d",my_packet.header.timestamp);
+            print_data_packet(&my_packet);
+        }
+        else
+        {
+            LEDOFF(LED1);
+            LEDON(LED2); //looking for magic character
+        }
+ *
+ *
+ */
 
 
 void UART3IntHandler(void)

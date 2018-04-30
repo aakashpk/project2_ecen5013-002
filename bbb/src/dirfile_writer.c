@@ -1,3 +1,11 @@
+/**
+ * @brief 
+ * 
+ * @file dirfile_writer.c
+ * @author Aakash
+ * @author Miles
+ * @date 2018-04-29
+ */
 #include "dirfile_writer.h"
 #include "packet_data_type.h"
 #include "file_helper.h"

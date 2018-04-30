@@ -3,6 +3,7 @@
  *
  *  Created on: Apr 22, 2018
  *      Author: aakash
+ * Author: Miles
  */
 
 #ifndef DRIVER_ETHERNET_H_
@@ -31,14 +32,40 @@ extern tEMACDMADescriptor g_psTxDescriptor[NUM_RX_DESCRIPTORS];
 extern uint32_t g_ui32RxDescIndex;
 extern uint32_t g_ui32TxDescIndex;
 
-
+/**
+ * @brief 
+ * 
+ */
 extern uint32_t  g_ui32SysClock;
 
+/**
+ * @brief Enable the physical MAC layer.
+ * 
+ */
 void enable_eth0(void);
 
+/**
+ * @brief 
+ * 
+ * @return int32_t 
+ */
 int32_t ProcessReceivedPacket(void);
+
+/**
+ * @brief Initialize Ethernet DMA descriptors
+ * 
+ * @param ui32Base DMA physical address base
+ */
 void InitDescriptors(uint32_t ui32Base);
 
+/**
+ * @brief Transmit ethernat packet from physical layer 
+ * to free rtos
+ * 
+ * @param pui8Buf  Network descriptor buffer 
+ * @param i32BufLen buffer length
+ * @return int32_t buffer length
+ */
 int32_t PacketTransmit(uint8_t *pui8Buf, int32_t i32BufLen);
 
 //BaseType_t vSendPing( const char *pcIPAddress );

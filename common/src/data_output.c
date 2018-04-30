@@ -9,7 +9,7 @@ void data_output_write_file(data_output_t *output, char* data, size_t len)
 
 void data_output_write_serial(data_output_t *output, char* data, size_t len)
 {
-    // todo serial write
+    uart_send_n((void *)data,len);
 }
 
 void data_output_write_socket(data_output_t *output, char* data, size_t len)
@@ -36,7 +36,9 @@ void data_output_flush_socket(data_output_t *output)
 // data output open functions
 void data_output_open_file(data_output_t *output, char* name)
 {
+    #ifdef BBB
     output->output_fp = fopen_check(name, "w");
+    #endif
 }
 
 void data_output_open_serial(data_output_t *output, char* name)

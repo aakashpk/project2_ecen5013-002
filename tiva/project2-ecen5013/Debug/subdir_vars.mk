@@ -16,7 +16,6 @@ C_SRCS += \
 ../packet_comm.c \
 ../pid.c \
 ../project2_tasks.c \
-../serial_write.c \
 ../tm4c1292ncpdt_startup_ccs.c \
 ../uartstdio.c 
 
@@ -25,7 +24,6 @@ C_DEPS += \
 ./packet_comm.d \
 ./pid.d \
 ./project2_tasks.d \
-./serial_write.d \
 ./tm4c1292ncpdt_startup_ccs.d \
 ./uartstdio.d 
 
@@ -34,7 +32,6 @@ OBJS += \
 ./packet_comm.obj \
 ./pid.obj \
 ./project2_tasks.obj \
-./serial_write.obj \
 ./tm4c1292ncpdt_startup_ccs.obj \
 ./uartstdio.obj 
 
@@ -43,7 +40,6 @@ OBJS__QUOTED += \
 "packet_comm.obj" \
 "pid.obj" \
 "project2_tasks.obj" \
-"serial_write.obj" \
 "tm4c1292ncpdt_startup_ccs.obj" \
 "uartstdio.obj" 
 
@@ -52,7 +48,6 @@ C_DEPS__QUOTED += \
 "packet_comm.d" \
 "pid.d" \
 "project2_tasks.d" \
-"serial_write.d" \
 "tm4c1292ncpdt_startup_ccs.d" \
 "uartstdio.d" 
 
@@ -61,7 +56,6 @@ C_SRCS__QUOTED += \
 "../packet_comm.c" \
 "../pid.c" \
 "../project2_tasks.c" \
-"../serial_write.c" \
 "../tm4c1292ncpdt_startup_ccs.c" \
 "../uartstdio.c" 
 

@@ -3,6 +3,7 @@
  *
  *  Created on: Apr 26, 2018
  *      Author: aakash
+ * Author: Miles
  */
 
 #ifndef SPEED_SENSOR_H_
@@ -21,23 +22,44 @@
 #define PULSES_PER_REV  16
 #define PERIODS_PER_SEC 250
 
+/**
+ * @brief Initialize the quad decoder
+ * 
+ */
 void quad_encoder_init(void);
 
+/**
+ * @brief Get the position object
+ * 
+ * @return uint32_t 
+ */
 uint32_t get_position(void);
 
+/**
+ * @brief Initialize GPIO interrupt for 
+ * single pulse tachometer reads
+ * 
+ */
 void tachometer_init(void);
 
+/**
+ * @brief GPIO interrupt handler for 
+ * tachometer pulses
+ */
 void GPIOPP3IntHandler(void);
 
-
+/**
+ * @brief Get the speed read from quad decode calculation
+ * 
+ * @return float speed in rps
+ */
 float get_speed(void);
 
-
-float get_speed_setpoint(void);
-
-
-float get_error(void);
-
+/**
+ * @brief test function for debug
+ * 
+ * @return uint32_t 
+ */
 uint32_t get_speed_test(void);
 
 #endif /* SPEED_SENSOR_H_ */

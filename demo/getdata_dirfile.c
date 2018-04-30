@@ -1,3 +1,11 @@
+/**
+ * @brief 
+ * 
+ * @file getdata_dirfile.c
+ * @author Aakash
+ * @author Miles
+ * @date 2018-04-29
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

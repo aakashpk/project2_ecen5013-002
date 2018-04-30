@@ -19,10 +19,24 @@
 #define ADC_FACTOR (3.3/4096.0)
 #define CURRENT_MEASURE_RESISTANCE 1.5
 
+/**
+ * @brief Initialize ADC
+ * 
+ */
 void adc_init(void);
 
+/**
+ * @brief Get raw adc count values
+ * 
+ * @return uint32_t adc counts from ADC0
+ */
 uint32_t get_adc_count(void);
 
+/**
+ * @brief Get the current values from ADC
+ * 
+ * @return float current values
+ */
 float get_current(void);
 
 

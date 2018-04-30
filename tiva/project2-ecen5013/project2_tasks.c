@@ -1,3 +1,11 @@
+/**
+ * @brief 
+ * 
+ * @file project2_tasks.c
+ * @author Aakash
+ * @author Miles
+ * @date 2018-04-29
+ */
 #include "project2_tasks.h"
 
 #define TASKSTACKSIZE   1024         // Stack size in words 128
@@ -77,8 +85,6 @@ static void motor_task(void *pvParameters)
     if( xTimerStart(xMotor_timer, 0 ) != pdPASS )
         UARTprintf("Current measure timer setup Error !!\n");
 
-    char fstring[20];
-
     while(1)
     {
         ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
@@ -91,8 +97,8 @@ static void motor_task(void *pvParameters)
 
         UARTprintf("[LOG] PWM duty cycle %d",duty_cycle);
 
-        sprintf (fstring, "%f", gMotorValues.setpoint);
-        UARTprintf(" %s\n", fstring);
+        //sprintf (fstring, "%f", gMotorValues.setpoint);
+        //UARTprintf(" %s\n", fstring);
 
 
         if(xTaskNotify(xLogger_task,LOG_NOTIFY,eSetValueWithOverwrite)!=pdTRUE)
@@ -213,6 +219,7 @@ static void log_receive_task(void *pvParameters)
                 {
                     LEDON(LED1); // UART receive activity
                     LEDOFF(LED2);
+
                     uart_get_n(&length,4);
                     uart_get_n(&my_packet,(length-4));
 

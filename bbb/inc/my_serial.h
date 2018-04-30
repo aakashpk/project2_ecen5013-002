@@ -1,3 +1,11 @@
+/**
+ * @brief 
+ * 
+ * @file my_serial.h
+ * @author Aakash
+ * @author Miles
+ * @date 2018-04-29
+ */
 #pragma once
 
 #include <termios.h>

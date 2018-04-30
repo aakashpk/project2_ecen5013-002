@@ -1,5 +1,5 @@
 # Project1 ECEN5013-002
-Project 1 for Advanced Principles of Embedded Software ECEN5013-002, Spring 2018
+Project 2 for Advanced Principles of Embedded Software ECEN5013-002, Spring 2018
 
 ## Run Instructions
 * `make run PLATFORM=BBB` for building for BBG/BBB and transferring the executable to /home/proj1 on the BBB/BBG
@@ -13,6 +13,6 @@ Project 1 for Advanced Principles of Embedded Software ECEN5013-002, Spring 2018
 
 
 
-
+### Reference
 PID library from https://github.com/mblythe86/C-PID-Library
 

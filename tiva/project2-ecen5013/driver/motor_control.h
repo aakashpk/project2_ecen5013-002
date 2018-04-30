@@ -3,6 +3,7 @@
  *
  *  Created on: Apr 27, 2018
  *      Author: aakash
+ * Author: Miles
  */
 
 #ifndef MOTOR_CONTROL_H_
@@ -31,14 +32,37 @@ extern motor_values_t gMotorValues; // from packet datatype
 extern pid_param_t g_pid_params;
 extern PidType g_pid_values; // from PID library
 
+/**
+ * @brief Initialize motor PWM
+ * 
+ */
 void pwm_init(void);
 
+/**
+ * @brief write pwm duty cycle to motor 
+ * 
+ * @param duty_cycle 
+ */
 void motor_speed(uint32_t duty_cycle);
 
+/**
+ * @brief Initialize PID 
+ * 
+ */
 void Init_PID(void);
 
+/**
+ * @brief Coumputes pid output values
+ * 
+ * @return uint32_t 
+ */
 uint32_t PID_compute_output(void);
 
+/**
+ * @brief test function for PWM
+ * 
+ * @param value 
+ */
 void led_bright(uint8_t value); // testing function
 
 

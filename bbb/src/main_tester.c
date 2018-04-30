@@ -1,4 +1,11 @@
-
+/**
+ * @brief 
+ * 
+ * @file main_tester.c
+ * @author Aakash
+ * @author Miles
+ * @date 2018-04-29
+ */
 #include <stdio.h>
 #include <pthread.h>
 #include <string.h>

@@ -13,6 +13,7 @@
 
 #ifdef USEUART
 volatile comm_hw_t comm_hw_used = UART;
+
 #else
 volatile comm_hw_t comm_hw_used = TCP;
 #endif
@@ -53,7 +54,9 @@ int packet_send(packet_type_t type, packet_data_t * packet)
 
     UARTprintf("[LOG] %s size:%d at:%d\n",packet_type_strings[type],length,packet->header.timestamp);
 
-    //write_packet(output, packet);
+    static data_output_t output = {.current_output_mode=OUTPUT_TO_SERIAL};
+
+    //write_packet(&output, packet);
 
 
     switch(comm_hw_used)

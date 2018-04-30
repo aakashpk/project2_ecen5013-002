@@ -126,19 +126,7 @@ uint32_t get_speed_test(void)
    return value;
 }
 
-float get_speed_setpoint(void)
-{
-   float value=0;
 
-   return value;
-}
-
-float get_error(void)
-{
-   float value=0;
-
-   return value;
-}
 
 
 
