@@ -1,3 +1,12 @@
+/**
+ * @brief Abstraction for interacting with a variety of IO options.
+ *
+ * @file data_output.c
+ * @author Aakash Kumar
+ * @author Miles Frain
+ * @date 2018-04-29
+ */
+
 #include "data_output.h"
 #include "file_helper.h"
 

@@ -1,3 +1,10 @@
+/**
+ * @brief common helper functions
+ *
+ * @file utilities.h
+ * @author Aakash Kumar @author Miles Frain
+ * @date 2018-04-29
+ */
 #pragma once
 
 #include <stdint.h>

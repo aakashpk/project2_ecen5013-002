@@ -1,3 +1,11 @@
+/**
+ * @brief Parses incomming packet stream
+ *
+ * @file packet_parser.h
+ * @author Aakash Kumar @author Miles Frain
+ * @date 2018-04-29
+ */
+
 #pragma once
 
 #include "dirfile_writer.h"

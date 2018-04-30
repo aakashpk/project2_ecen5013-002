@@ -1,3 +1,11 @@
+/**
+ * @brief Generates data stream
+ *
+ * @file data_gen.c
+ * @author Aakash Kumar
+ * @author Miles Frain
+ * @date 2018-04-29
+ */
 #include "packet_writer.h"
 #include <stdlib.h>
 #include <unistd.h>
