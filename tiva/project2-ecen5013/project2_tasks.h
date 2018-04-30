@@ -27,8 +27,6 @@
 // for uart printf
 #include "utils/uartstdio.h"
 
-#include "pid.h"
-
 // Time between logs in ms
 #define LOG_INTERVAL 500
 

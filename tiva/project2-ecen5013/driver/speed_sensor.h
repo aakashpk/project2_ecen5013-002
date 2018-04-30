@@ -15,6 +15,8 @@
 #include "driverlib/pin_map.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/qei.h"
+#include "driverlib/timer.h"
+
 
 #define PULSES_PER_REV  16
 #define PERIODS_PER_SEC 250
@@ -22,6 +24,10 @@
 void quad_encoder_init(void);
 
 uint32_t get_position(void);
+
+void tachometer_init(void);
+
+void GPIOPP3IntHandler(void);
 
 
 float get_speed(void);

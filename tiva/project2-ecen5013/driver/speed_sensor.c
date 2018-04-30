@@ -66,6 +66,47 @@ uint32_t get_position(void)
     return QEIPositionGet(QEI0_BASE);
 }
 
+void tachometer_init(void)
+{
+    // Tachometer connected to PP3
+
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOP);
+    GPIOPinTypeGPIOInput(GPIO_PORTP_BASE, GPIO_PIN_3);
+
+    GPIOPadConfigSet(GPIO_PORTP_BASE, GPIO_PIN_3, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
+
+    //GPIODirModeSet(GPIO_PORTN_BASE,GPIO_PIN_4,GPIO_DIR_MODE_HW);
+
+    //GPIOIntClear(GPIO_PORTP_BASE,GPIO_INT_PIN_3);
+
+    GPIOIntTypeSet(GPIO_PORTP_BASE,GPIO_PIN_3,GPIO_RISING_EDGE);
+    GPIOIntRegister(GPIO_PORTP_BASE,GPIOPP3IntHandler);
+    GPIOIntEnable(GPIO_PORTP_BASE,GPIO_INT_PIN_3);
+
+}
+
+static int a=0;
+
+void GPIOPP3IntHandler(void)
+{
+    GPIOIntClear(GPIO_PORTP_BASE,GPIO_INT_PIN_3);
+    timer_past_val=timer_cur_val;
+    timer_cur_val = TimerValueGet();
+
+}
+
+uint64_t timer_cur_val, timer_past_val;
+
+void timer_init(void)
+{
+
+}
+
+float get_speed_2(void)
+{
+    return timer_cur_val-timer_past_val;
+
+}
 
 float get_speed(void)
 {

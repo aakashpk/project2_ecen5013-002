@@ -31,7 +31,7 @@ void adc_init(void)
     //
     ADCSequenceConfigure(ADC0_BASE, 0, ADC_TRIGGER_PROCESSOR, 0);
     ADCSequenceStepConfigure(ADC0_BASE, 0, 0,
-    ADC_CTL_IE | ADC_CTL_END | ADC_CTL_CH0);
+                             ADC_CTL_IE | ADC_CTL_END | ADC_CTL_CH0);
     ADCSequenceEnable(ADC0_BASE, 0);
 
 
@@ -103,6 +103,9 @@ float get_current(void)
     //
     ADCSequenceDataGet(ADC0_BASE, 0, &current);
 
-    return (current*ADC_FACTOR/CURRENT_MEASURE_RESISTANCE);
+
+    // -500 to offset some reading from ADC when no current is present,
+    // the GPIO may need to be pulled down ?
+    return ((current)*ADC_FACTOR/CURRENT_MEASURE_RESISTANCE);
 
 }

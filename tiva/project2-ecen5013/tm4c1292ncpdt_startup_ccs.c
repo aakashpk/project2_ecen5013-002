@@ -60,6 +60,7 @@ extern void vPortSVCHandler(void);
 extern void xPortSysTickHandler(void);
 extern void EthernetIntHandler(void);
 extern void UART3IntHandler(void);
+extern void GPIOPP3IntHandler(void);
 //*****************************************************************************
 //
 // The vector table.  Note that the proper constructs must be placed on this to
@@ -166,7 +167,7 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // GPIO Port P (Summary or P0)
     IntDefaultHandler,                      // GPIO Port P1
     IntDefaultHandler,                      // GPIO Port P2
-    IntDefaultHandler,                      // GPIO Port P3
+    GPIOPP3IntHandler,                      // GPIO Port P3
     IntDefaultHandler,                      // GPIO Port P4
     IntDefaultHandler,                      // GPIO Port P5
     IntDefaultHandler,                      // GPIO Port P6

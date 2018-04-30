@@ -19,9 +19,14 @@ extern QueueHandle_t xQueue1;
 
 extern xSemaphoreHandle g_logtask_Semaphore;
 
-motor_values_t gMotorValues;
-
 extern SemaphoreHandle_t xData_Semaphore;
+
+
+// Motor and PID globals
+motor_values_t gMotorValues;
+PidType g_pid_values; // from PID library
+pid_param_t g_pid_params;
+
 
 /* Timer callbacks */
 
@@ -60,7 +65,11 @@ void pid_timer_callback(TimerHandle_t xTimer)
 
 static void motor_task(void *pvParameters)
 {
-    uint8_t speed;
+    uint32_t duty_cycle;
+
+    Init_PID();
+
+    gMotorValues.setpoint=50;
 
     TimerHandle_t xMotor_timer;
     xMotor_timer = xTimerCreate("Logger_Timer",pdMS_TO_TICKS(MOTOR_CALC_INTERVAL),
@@ -74,15 +83,17 @@ static void motor_task(void *pvParameters)
     {
         ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
 
+        duty_cycle=PID_compute_output();
+        //duty_cycle+=5;
+        //if(duty_cycle>95) duty_cycle=0;
 
-        // Add pid calcs here and write to motor
+        motor_speed(duty_cycle);
 
-            motor_speed(speed);
-            speed+=5;
-            if(speed>95) speed=0;
+        UARTprintf("[LOG] PWM duty cycle %d",duty_cycle);
 
-        sprintf (fstring, "%f", gMotorValues.current);
-        UARTprintf("[LOG] PWM value %d\n",speed);
+        sprintf (fstring, "%f", gMotorValues.setpoint);
+        UARTprintf(" %s\n", fstring);
+
 
         if(xTaskNotify(xLogger_task,LOG_NOTIFY,eSetValueWithOverwrite)!=pdTRUE)
                 UARTprintf("Notification not passed from Logger timer\n");
@@ -105,7 +116,7 @@ static void current_measure_task(void *pvParameters)
         ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
         //xSemaphoreTake( xData_Semaphore, ( TickType_t ) 10 );
         gMotorValues.current=get_current();
-        //xSemaphoreTake( xData_Semaphore, ( TickType_t ) 10 );
+        //xSemaphoreGive( xData_Semaphore );
 
         sprintf (fstring, "%f", gMotorValues.current);
         UARTprintf("[LOG] Current %s\n", fstring);
@@ -125,7 +136,7 @@ static void speed_measure_task(void *pvParameters)
 
         //xSemaphoreTake( xData_Semaphore, ( TickType_t ) 10 );
         gMotorValues.speed=get_speed();
-        //xSemaphoreTake( xData_Semaphore, ( TickType_t ) 10 );
+        //xSemaphoreGive( xData_Semaphore );
 
         sprintf (fstring, "%f", gMotorValues.speed);
         UARTprintf("[LOG] Speed %s\n", fstring);

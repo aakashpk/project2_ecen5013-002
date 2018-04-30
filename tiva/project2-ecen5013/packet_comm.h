@@ -23,8 +23,6 @@
 #include "FreeRTOS_Sockets.h"
 
 
-
-
 typedef enum comms_hardware
 {
     UNINIT,

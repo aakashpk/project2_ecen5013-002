@@ -16,8 +16,8 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/adc.h"
 
-#define ADC_FACTOR (5.0/4096.0)
-#define CURRENT_MEASURE_RESISTANCE 1.0
+#define ADC_FACTOR (3.3/4096.0)
+#define CURRENT_MEASURE_RESISTANCE 1.5
 
 void adc_init(void);
 

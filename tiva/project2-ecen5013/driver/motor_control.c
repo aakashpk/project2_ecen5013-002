@@ -6,7 +6,6 @@
  *      Author: Miles
  */
 
-
 #include "motor_control.h"
 
 // PF0 is PWM0 GEN0, but has led3 connected
@@ -56,7 +55,7 @@ void pwm_init(void)
     PWMClockSet(PWM0_BASE,PWM_SYSCLK_DIV_8);
     // 15khz PWM with the value of 1000
     // and 1khz with 15000
-    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, 15000);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, 1000);
 
     //
     // Set the pulse width of PWM0 for a 25% duty cycle.
@@ -80,7 +79,7 @@ void pwm_init(void)
 }
 
 //TODO: To be cleaned up to
-void motor_speed(uint8_t duty_cycle) // value is % number and
+void motor_speed(uint32_t duty_cycle) // value is % number and
 //pulse width gets calculated in function
 {
     uint32_t period, width;
@@ -100,47 +99,36 @@ void led_bright(uint8_t value) // value is % number and
     PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, width);
 }
 
-//TODO: fix these functions
-float get_pvalue(void)
+void Init_PID(void)
 {
-    float value=0;
 
-    return value;
+    g_pid_params.kp=KP_DEFAULT_VAL;
+    g_pid_params.kd=KD_DEFAULT_VAL;
+    g_pid_params.ki=KI_DEFAULT_VAL;
+
+
+    PID_init(&g_pid_values, g_pid_params.kp, g_pid_params.ki, g_pid_params.kd,PID_Direction_Direct); //PID_Direction_Reverse ,PID_Direction_Direct
+    PID_SetOutputLimits(&g_pid_values, OUPUT_MIN_VAL, OUPUT_MAX_VAL);
+    PID_SetMode(&g_pid_values, PID_Mode_Automatic);
 }
 
-
-float get_ivalue(void)
+uint32_t PID_compute_output(void)
 {
-    float value=0;
+    float speed,setpoint;
 
-    return value;
+    //xSemaphoreTake( xData_Semaphore, ( TickType_t ) 10 );
+    speed=gMotorValues.speed;
+    setpoint=gMotorValues.setpoint;
+    //xSemaphoreGive( xData_Semaphore );
+
+    g_pid_values.myInput=speed;
+    g_pid_values.mySetpoint=setpoint;
+    gMotorValues.error=(setpoint-speed);
+
+    PID_Compute(&g_pid_values);
+
+    return (uint32_t)g_pid_values.myOutput;
+    // No issues with the uint32_t cast as the limit is set for 0 to 100
 }
 
-float get_dvalue(void)
-{
-    float value=0;
-
-    return value;
-}
-
-float get_kp(void)
-{
-    float value=0;
-
-    return value;
-}
-
-float get_ki(void)
-{
-    float value=0;
-
-    return value;
-}
-
-
-float get_kd(void)
-{
-    float value=0;
-
-    return value;
-}
+// Functions removed we used global variable in the interest of speed

@@ -67,15 +67,19 @@ int main(void)
 
     UARTprintf("[LOG] UART Initialized\n");
 
+
     // Initialize peripherals
     ConfigureLEDs();
     adc_init();
     quad_encoder_init();
     pwm_init();
+    tachometer_init();
+
+    //UARTprintf("\n %d \n",GPIOIntStatus(GPIO_PORTP_BASE,true));
 
     UARTprintf("[LOG] Peripherals Initialized\n");
 
-    motor_speed(100);
+    motor_speed(0);
 
 #ifdef USEIP
     xNetworkInterfaceInitialise();

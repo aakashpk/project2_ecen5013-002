@@ -40,10 +40,10 @@ int packet_send(packet_type_t type, packet_data_t * packet)
         case MOTOR_VALUES:
             length=get_motor_values(packet);
             break;
-        case PARAMETERS:
+        case PID_PARAMETERS:
             length=get_pid_params(packet);
             break;
-        case CONFIGUARTION:
+        case PID_CONFIGUARTION:
             length=get_pid_config(packet);
             break;
         default:
@@ -52,6 +52,9 @@ int packet_send(packet_type_t type, packet_data_t * packet)
     }
 
     UARTprintf("[LOG] %s size:%d at:%d\n",packet_type_strings[type],length,packet->header.timestamp);
+
+    write_packet(output, packet);
+
 
     switch(comm_hw_used)
     {
@@ -88,8 +91,11 @@ size_t get_heartbeat(packet_data_t * packet)
     return value;
 }
 
+
 size_t get_motor_values(packet_data_t * packet)
 {
+    extern motor_values_t gMotorValues; // from packet datatype
+
     size_t value;
     value=(sizeof(packet_header_t)+sizeof(motor_values_t));
 
@@ -97,34 +103,35 @@ size_t get_motor_values(packet_data_t * packet)
     packet->header.timestamp=xTaskGetTickCount();
     packet->header.length=value;
 
-    //TODO: to call correct functions here
-    packet->value.speed=get_speed();
-    packet->value.setpoint=get_speed_setpoint();
-    packet->value.error=get_error();
-    packet->value.p_value=get_pvalue();
-    packet->value.i_value=get_ivalue();
-    packet->value.d_value=get_dvalue();
-    packet->value.pwm_output=0;
+    //xSemaphoreTake( xData_Semaphore, ( TickType_t ) 10 );
+    packet->motor_values.speed=gMotorValues.speed;
+    packet->motor_values.setpoint=gMotorValues.setpoint;
+    packet->motor_values.error=gMotorValues.error;
+    packet->motor_values.p_value=gMotorValues.p_value;
+    packet->motor_values.i_value=gMotorValues.i_value;
+    packet->motor_values.d_value=gMotorValues.d_value;
+    packet->motor_values.pwm_output=gMotorValues.pwm_output;
+    //xSemaphoreGive( xData_Semaphore );
 
     //packet->checksum=calc_checksum(MOTOR_VALUES,packet);
 
     return value;
-        //TODO: will this work properly? the struct may get resized for alignment.
-        //to be checked, could do a packed struct to prevent that.
 }
 
 size_t get_pid_params(packet_data_t * packet)
 {
+    extern pid_param_t g_pid_params;
+
     size_t value;
     value=(sizeof(packet_header_t)+sizeof(pid_param_t));
 
-    packet->header.packet_type=PARAMETERS;
+    packet->header.packet_type=PID_PARAMETERS;
     packet->header.timestamp=xTaskGetTickCount();
     packet->header.length=value;
 
-    packet->parameters.kp=get_kp();
-    packet->parameters.ki=get_ki();
-    packet->parameters.kd=get_kd();
+    packet->pid_param.kp=g_pid_params.kp;
+    packet->pid_param.ki=g_pid_params.ki;
+    packet->pid_param.kd=g_pid_params.kd;
 
     //packet->checksum=calc_checksum(PARAMETERS,packet);
 
@@ -137,14 +144,14 @@ size_t get_pid_config(packet_data_t * packet)
     size_t value;
     value=(sizeof(packet_header_t)+sizeof(pid_config_t));
 
-    packet->header.packet_type=CONFIGUARTION;
+    packet->header.packet_type=PID_CONFIGUARTION;
     packet->header.timestamp=xTaskGetTickCount();
     packet->header.length=value;
 
-    //TODO: to call correct functions here
-    packet->configuration.auto_tune=false;
-    packet->configuration.rate_s=0;
-    packet->configuration.windup_limit=0;
+    //TODO: Not being implemented at this point
+    packet->pid_config.auto_tune=false;
+    packet->pid_config.update_period_ns=0;
+    packet->pid_config.windup_limit=0;
 
     //packet->checksum=calc_checksum(CONFIGUARTION,packet);
 
@@ -165,10 +172,10 @@ size_t calc_checksum(packet_type_t type, packet_data_t * packet)
         case MOTOR_VALUES:
             csm=3;
             break;
-        case PARAMETERS:
+        case PID_PARAMETERS:
             csm=4;
             break;
-        case CONFIGUARTION:
+        case PID_CONFIGUARTION:
             csm=4;
             break;
     }
@@ -178,7 +185,7 @@ size_t calc_checksum(packet_type_t type, packet_data_t * packet)
 
 void print_data_packet(packet_data_t * packet)
 {
-    packet_type_t type;
+    uint32_t type;
 
     type=packet->header.packet_type;
 
@@ -190,10 +197,10 @@ void print_data_packet(packet_data_t * packet)
         case MOTOR_VALUES:
             UARTprintf("[%s] at %d \n",packet_type_strings[type],packet->header.timestamp);
             break;
-        case PARAMETERS:
+        case PID_PARAMETERS:
             UARTprintf("[%s] at %d \n",packet_type_strings[type],packet->header.timestamp);
             break;
-        case CONFIGUARTION:
+        case PID_CONFIGUARTION:
             UARTprintf("[%s] at %d \n",packet_type_strings[type],packet->header.timestamp);
             break;
     }
