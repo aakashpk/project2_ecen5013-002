@@ -10,7 +10,7 @@ CC=gcc
 CSTD=gnu99
 
 INCLUDE=-I./inc\
-	-I./../common
+	-I./../common/inc
 
 CFLAGS=-std=$(CSTD)\
 	-lpthread\
@@ -93,6 +93,6 @@ and runs them
 	$(TESTFLAGS)
 
 clean:
-	rm -f src/*.o test/*.o
+	rm -f src/*.o test/*.o ../common/src/*.o
 	rm -f $(TEST_TARGETS) $(TARGET) client
 
