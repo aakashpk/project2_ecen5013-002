@@ -59,7 +59,7 @@ build: $(OBJECTS)
 #build and run , changes based on platform
 run: build
 ifeq ($(PLATFORM),BBB)
-	scp $(TARGET) debian@192.168.7.2:/home/debian/proj1/$(TARGET)
+	scp $(TARGET) debian@192.168.7.2:/home/debian/proj2/$(TARGET)
 else
 	./$(TARGET) -f logfile.txt
 endif
