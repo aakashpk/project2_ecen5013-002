@@ -53,7 +53,7 @@ int packet_send(packet_type_t type, packet_data_t * packet)
 
     UARTprintf("[LOG] %s size:%d at:%d\n",packet_type_strings[type],length,packet->header.timestamp);
 
-    write_packet(output, packet);
+    //write_packet(output, packet);
 
 
     switch(comm_hw_used)

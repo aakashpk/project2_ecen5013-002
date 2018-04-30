@@ -5,7 +5,9 @@
 
 static inline uint8_t get_checksum(uint8_t* buf, size_t len, uint8_t seed)
 {
-    for (size_t i = 0; i < len; i++)
+    size_t i;
+
+    for (i = 0; i < len; i++)
     {
         seed += buf[i];
     }

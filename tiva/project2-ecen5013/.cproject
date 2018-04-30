@@ -50,7 +50,7 @@
 									<listOptionValue builtIn="false" value="./../../Support_files/FreeRTOS/Source/include"/>
 									<listOptionValue builtIn="false" value="./../../Support_files/FreeRTOS/Source/portable/CCS/ARM_CM4F"/>
 									<listOptionValue builtIn="false" value="./../../Support_files"/>
-									<listOptionValue builtIn="false" value="./../../../common"/>
+									<listOptionValue builtIn="false" value="./../../../common/inc"/>
 									<listOptionValue builtIn="false" value="./../../Support_files/FreeRTOS-Plus-TCP/include"/>
 									<listOptionValue builtIn="false" value="./../../Support_files/FreeRTOS-Plus-TCP/portable/Compiler/CCS"/>
 									<listOptionValue builtIn="false" value="${CG_TOOL_ROOT}/include"/>

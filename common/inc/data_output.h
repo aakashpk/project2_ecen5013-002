@@ -31,3 +31,4 @@ void data_output_open(data_output_t *output, char* name);
 void data_output_close(data_output_t *output);
 
 void data_output_flush(data_output_t *output);
+

@@ -85,17 +85,17 @@ void tachometer_init(void)
 
 }
 
-static int a=0;
+uint64_t timer_cur_val, timer_past_val;
 
 void GPIOPP3IntHandler(void)
 {
     GPIOIntClear(GPIO_PORTP_BASE,GPIO_INT_PIN_3);
     timer_past_val=timer_cur_val;
-    timer_cur_val = TimerValueGet();
+    //timer_cur_val = TimerValueGet();
 
 }
 
-uint64_t timer_cur_val, timer_past_val;
+
 
 void timer_init(void)
 {
