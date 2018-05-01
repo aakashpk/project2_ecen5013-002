@@ -7,13 +7,23 @@
 #include "packet_parser.h"
 #include "file_helper.h" // fopen_check
 
+#define IO_SCHEME FILE
 // pthread
 void *bbb_packet_parsing_task(void* ptr)
 {
     bbb_packet_parsing_task_params_t *param = (bbb_packet_parsing_task_params_t *)ptr;
 
+#if (IO_SCHEME == FILE)
     // Open input file
     FILE *input_fp = fopen_check(param->input_path, "r");
+#elif (IO_SCHEME == UART)
+
+#if (PLATFORM == HOST)
+#elif (PLATFORM == BBB)
+#endif // PLATFORM
+
+
+#endif // IO_SCHEME
 
     // Open dirfile output
     dir_handles_t dirfile_handles;
@@ -39,6 +49,8 @@ void *bbb_packet_parsing_task(void* ptr)
 
     // packet parser somehow returned, so should probably close files
     fclose(input_fp);
+
+
     close_dirfile(&dirfile_handles);
 
     return NULL;

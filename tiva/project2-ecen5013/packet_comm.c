@@ -10,6 +10,9 @@
 
 #include "packet_comm.h"
 
+#include "tiva_packet_handling.h"
+#include "tiva_packet_writer.h"
+
 
 #ifdef USEUART
 volatile comm_hw_t comm_hw_used = UART;
@@ -33,7 +36,7 @@ char *packet_type_strings[] =
 
 int packet_send(packet_type_t type, packet_data_t * packet)
 {
-    UARTCharPut(DATA_UART, 0xFE);
+    //UARTCharPut(DATA_UART, 0xFE);
     size_t length;
     switch(type)
     {
@@ -64,7 +67,8 @@ int packet_send(packet_type_t type, packet_data_t * packet)
     switch(comm_hw_used)
     {
         case UART:
-            uart_send_n((void *)packet,length);
+            write_packet(packet, tiva_uart_write, NULL, NULL);
+            //uart_send_n((void *)packet,length);
             break;
         case TCP:
             FreeRTOS_send(xSocket,packet,length,0);

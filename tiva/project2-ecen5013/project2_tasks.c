@@ -1,6 +1,6 @@
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @file project2_tasks.c
  * @author Aakash
  * @author Miles
@@ -177,12 +177,13 @@ static void logger_task(void *pvParameters)
 
         if(event == HEARTBEAT_NOTIFY)
         {
-            packet_send(COMM_HEARTBEAT,&dataPacket);
-
+            write_packet(&dataPacket, tiva_uart_write, NULL, NULL);
+            //packet_send(COMM_HEARTBEAT,&dataPacket);
         }
         else if(event == LOG_NOTIFY)
         {
-            packet_send(MOTOR_VALUES,&dataPacket);
+            write_packet(&dataPacket, tiva_uart_write, NULL, NULL);
+            //packet_send(MOTOR_VALUES,&dataPacket);
 
         }
         else UARTprintf("[WARN] Unknown task notification\n");
@@ -310,4 +311,3 @@ uint32_t log_receive_task_create(void)
 
       return(0); // Successful task creation
 }
-
