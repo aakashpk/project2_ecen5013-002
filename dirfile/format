@@ -1,0 +1,44 @@
+# Format is:
+# <field name> <field type (always RAW)> <data type> <samples per frame (always 1)>
+# http://getdata.sourceforge.net/dirfile.html
+
+# measured from tachometer
+speed RAW FLOAT32 1
+# desired speed in RPS
+setpoint RAW FLOAT32 1
+# measured - desired
+error RAW FLOAT32 1
+
+# sent to motor
+pwm_output RAW UINT32 1
+
+# calculated terms
+p_value RAW FLOAT32 1
+i_value RAW FLOAT32 1
+d_value RAW FLOAT32 1
+
+# pid parameters
+# these updates are not sent as frequently,
+# so latest must be maintained by c-struct to dirfile converter
+# to be re-written to dirfile every frame
+kp RAW FLOAT32 1
+ki RAW FLOAT32 1
+kd RAW FLOAT32 1
+
+
+# Below fields do not update often
+
+# auto tune enabled
+# bool, but can allow faster writes (in exchange for disk space),
+# by writing 32-bit word.
+# writing bits is also allowed, but may not be worth slowdown,
+# since flushing every write. Would be more ideal if flushing after many samples.
+auto_tune RAW UINT32 1
+
+# period of PID loop (time between updates),
+# not the same as time interval between logged samples.
+# Units of ns, which can handle period of up to 4 seconds
+update_period_ns RAW UINT32 1
+
+# maximum absolute limit of integration term
+windup_limit RAW FLOAT32 1
