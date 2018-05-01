@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kst version="2.0">
+    <data>
+        <source reader="Directory of Binary Files" updateType="0" file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile"/>
+    </data>
+    <variables>
+        <datavector file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile" field="INDEX" start="-1" count="500" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="1" initialXNum="3"/>
+        <datavector file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile" field="kd" start="-1" count="500" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="2" initialXNum="14"/>
+        <datavector file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile" field="ki" start="-1" count="500" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="3" initialXNum="25"/>
+        <datavector file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile" field="kp" start="-1" count="500" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="4" initialXNum="36"/>
+        <datavector file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile" field="error" start="-1" count="500" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="5" initialXNum="47"/>
+        <datavector file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile" field="speed" start="-1" count="500" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="6" initialXNum="58"/>
+        <datavector file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile" field="d_value" start="-1" count="500" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="7" initialXNum="69"/>
+        <datavector file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile" field="i_value" start="-1" count="500" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="8" initialXNum="80"/>
+        <datavector file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile" field="p_value" start="-1" count="500" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="9" initialXNum="91"/>
+        <datavector file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile" field="setpoint" start="-1" count="500" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="10" initialXNum="102"/>
+        <datavector file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile" field="auto_tune" start="-1" count="500" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="11" initialXNum="113"/>
+        <datavector file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile" field="pwm_output" start="-1" count="500" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="12" initialXNum="124"/>
+        <datavector file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile" field="windup_limit" start="-1" count="500" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="13" initialXNum="135"/>
+        <datavector file="/home/miles/projects/apes/project2_ecen5013-002/dirfile" fileRelative="dirfile" field="update_period_ns" start="-1" count="500" skip="-1" doAve="false" startUnits="" rangeUnits="" initialVNum="14" initialXNum="146"/>
+    </variables>
+    <objects/>
+    <relations>
+        <curve xvector="INDEX (V1)" yvector="kd (V2)" color="#008000" alpha="255" headcolor="#000000" headalpha="255" barfillcolor="#000000" barfillalpha="255" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="0" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="0" initialCNum="1"/>
+        <curve xvector="INDEX (V1)" yvector="ki (V3)" color="#000000" alpha="255" headcolor="#000000" headalpha="255" barfillcolor="#000000" barfillalpha="255" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="1" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="-52325825" initialCNum="2"/>
+        <curve xvector="INDEX (V1)" yvector="kp (V4)" color="#ff00ff" alpha="255" headcolor="#000000" headalpha="255" barfillcolor="#000000" barfillalpha="255" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="2" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="1092371232" initialCNum="3"/>
+        <curve xvector="INDEX (V1)" yvector="error (V5)" color="#4682b4" alpha="255" headcolor="#000000" headalpha="255" barfillcolor="#000000" barfillalpha="255" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="3" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="0" initialCNum="4"/>
+        <curve xvector="INDEX (V1)" yvector="speed (V6)" color="#501010" alpha="255" headcolor="#000000" headalpha="255" barfillcolor="#000000" barfillalpha="255" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="4" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="1092371232" initialCNum="5"/>
+        <curve xvector="INDEX (V1)" yvector="d\_value (V7)" color="#105010" alpha="255" headcolor="#000000" headalpha="255" barfillcolor="#000000" barfillalpha="255" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="5" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="-491253920" initialCNum="6"/>
+        <curve xvector="INDEX (V1)" yvector="i\_value (V8)" color="#aa0000" alpha="255" headcolor="#000000" headalpha="255" barfillcolor="#000000" barfillalpha="255" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="6" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="-491253920" initialCNum="7"/>
+        <curve xvector="INDEX (V1)" yvector="p\_value (V9)" color="#0000aa" alpha="255" headcolor="#000000" headalpha="255" barfillcolor="#000000" barfillalpha="255" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="7" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="-1" initialCNum="8"/>
+        <curve xvector="INDEX (V1)" yvector="setpoint (V10)" color="#005500" alpha="255" headcolor="#000000" headalpha="255" barfillcolor="#000000" barfillalpha="255" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="8" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="-1" initialCNum="9"/>
+        <curve xvector="INDEX (V1)" yvector="auto\_tune (V11)" color="#000000" alpha="255" headcolor="#000000" headalpha="255" barfillcolor="#000000" barfillalpha="255" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="9" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="-1" initialCNum="10"/>
+        <curve xvector="INDEX (V1)" yvector="pwm\_output (V12)" color="#aa00aa" alpha="255" headcolor="#000000" headalpha="255" barfillcolor="#000000" barfillalpha="255" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="10" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="-1" initialCNum="11"/>
+        <curve xvector="INDEX (V1)" yvector="windup\_limit (V13)" color="#2e5778" alpha="255" headcolor="#000000" headalpha="255" barfillcolor="#000000" barfillalpha="255" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="11" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="-1" initialCNum="12"/>
+        <curve xvector="INDEX (V1)" yvector="update\_period\_ns (V14)" color="#350a0a" alpha="255" headcolor="#000000" headalpha="255" barfillcolor="#000000" barfillalpha="255" haslines="true" linewidth="0" linestyle="0" haspoints="false" pointtype="12" pointdensity="0" pointsize="12" hasbars="false" ignoreautoscale="false" hashead="false" headtype="-1" initialCNum="13"/>
+    </relations>
+    <graphics>
+        <view name="View &amp;1" width="1694" height="1110" color="#ffffff" style="1">
+            <plot tiedxzoom="false" tiedyzoom="false" leftlabelvisible="true" bottomlabelvisible="true" rightlabelvisible="true" toplabelvisible="true" globalfont="Ubuntu,11,-1,5,50,0,0,0,0,0" globalfontscale="16" globalfontcolor="#000000" showlegend="true" hidebottomaxislabel="false" hidetopaxislabel="false" hideleftaxislabel="false" hiderightaxislabel="false" numberaxislabelscale="true" initialPlotNum="1" name="Plot">
+                <position x="3" y="3" z="500"/>
+                <rect x="0" y="0" width="1688" height="1104"/>
+                <relativesize width="0.995870206489676" height="0.993699369936994" centerx="0.499705014749263" centery="0.4995499549955" posx="0.00176991150442478" posy="0.0027002700270027" leftx="0.00176991150442478" lefty="0.996399639963996" rightx="0.9976401179941" righty="0.996399639963996" fixaspect="false" lockpostodata="false"/>
+                <transform m11="1" m12="0" m13="0" m21="0" m22="1" m23="0" m31="0" m32="0" m33="1"/>
+                <pen style="1" width="1" miterlimit="2" cap="16" joinStyle="64">
+                    <brush color="#000000" style="1"/>
+                </pen>
+                <brush color="#ffffff" style="1"/>
+                <legend auto="true" title="" font="Ubuntu,11,-1,5,50,0,0,0,0,0" fontscale="9.6" color="#000000" verticaldisplay="false" name="Legend">
+                    <position x="133.712689422216" y="76.6031063732233" z="500"/>
+                    <rect x="0" y="0" width="1361" height="67"/>
+                    <relativesize width="0.849331097156675" height="0.0673028628829734" centerx="0.465946527975173" centery="0.0970397854075573" posx="0.0412809793968349" posy="0.0633883539660706" leftx="0.0412809793968349" lefty="0.130691216849044" rightx="0.89061207655351" righty="0.130691216849044" fixaspect="false" lockpostodata="false"/>
+                    <transform m11="1" m12="0" m13="0" m21="0" m22="1" m23="0" m31="0" m32="0" m33="1"/>
+                    <pen style="1" width="1" miterlimit="2" cap="16" joinStyle="64">
+                        <brush color="#000000" style="1"/>
+                    </pen>
+                    <brush color="#ffffff" style="1"/>
+                </legend>
+                <cartesianrender name="Cartesian Plot" type="1">
+                    <relation tag="kd vs INDEX (C1)"/>
+                    <relation tag="ki vs INDEX (C2)"/>
+                    <relation tag="kp vs INDEX (C3)"/>
+                    <relation tag="error vs INDEX (C4)"/>
+                    <relation tag="speed vs INDEX (C5)"/>
+                    <relation tag="d\_value vs INDEX (C6)"/>
+                    <relation tag="i\_value vs INDEX (C7)"/>
+                    <relation tag="p\_value vs INDEX (C8)"/>
+                    <relation tag="setpoint vs INDEX (C9)"/>
+                    <relation tag="auto\_tune vs INDEX (C10)"/>
+                    <relation tag="pwm\_output vs INDEX (C11)"/>
+                    <relation tag="windup\_limit vs INDEX (C12)"/>
+                    <relation tag="update\_period\_ns vs INDEX (C13)"/>
+                </cartesianrender>
+                <plotaxis id="xaxis" visible="true" log="false" reversed="false" autobaseoffset="true" baseoffset="false" forceoffsetmin="false" interpret="false" interpretation="1" display="4" displayformatstring="hh:mm:ss.zzz" majortickmode="5" minortickcount="5" autominortickcount="true" drawmajorticks="true" drawminorticks="true" drawmajorgridlines="true" drawminorgridlines="false" drawmajorgridlinecolor="#a0a0a4" drawminorgridlinecolor="#a0a0a4" drawmajorgridlinestyle="2" drawminorgridlinestyle="2" drawmajorgridlinewidth="1" drawminorgridlinewidth="1" significantdigits="9" rotation="0" zoommode="0" timezonename="GMT" timezoneoffset="0">
+                    <plotmarkers xaxis="true" linecolor="#000000" linestyle="1" linewidth="1" curvemode="-1"/>
+                </plotaxis>
+                <plotaxis id="yaxis" visible="true" log="false" reversed="false" autobaseoffset="true" baseoffset="false" forceoffsetmin="false" interpret="false" interpretation="1" display="4" displayformatstring="hh:mm:ss.zzz" majortickmode="5" minortickcount="5" autominortickcount="true" drawmajorticks="true" drawminorticks="true" drawmajorgridlines="true" drawminorgridlines="false" drawmajorgridlinecolor="#a0a0a4" drawminorgridlinecolor="#a0a0a4" drawmajorgridlinestyle="2" drawminorgridlinestyle="2" drawmajorgridlinewidth="1" drawminorgridlinewidth="1" significantdigits="9" rotation="0" zoommode="1" timezonename="GMT" timezoneoffset="0">
+                    <plotmarkers xaxis="false" linecolor="#000000" linestyle="1" linewidth="1" curvemode="-1"/>
+                </plotaxis>
+                <plotlabel id="leftlabel" visible="true" overridetext="" autolabel="true" font="Ubuntu,11,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <plotlabel id="rightlabel" visible="true" overridetext="" autolabel="true" font="Ubuntu,11,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <plotlabel id="toplabel" visible="true" overridetext="" autolabel="true" font="Ubuntu,11,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <plotlabel id="bottomlabel" visible="true" overridetext="" autolabel="true" font="Ubuntu,11,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <plotlabel id="numberlabel" visible="true" overridetext="" autolabel="true" font="Ubuntu,11,-1,5,50,0,0,0,0,0" fontscale="16" fontcolor="#000000" fontuseglobal="true"/>
+                <projectionrect x="140" y="-12.05" width="499" height="44.1"/>
+            </plot>
+        </view>
+    </graphics>
+</kst>

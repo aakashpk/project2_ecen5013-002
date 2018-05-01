@@ -32,10 +32,11 @@ int main(int argc, char **argv)
         {
         case 'h':
             printf("\n"
-                   "-f file"
-                   "-g gen flag"
-                   "-b block flag"
+                   "-f file\n"
+                   "-g gen flag\n"
+                   "-b block flag\n"
                    "-h help\n");
+            exit(0);
             break;
         case 'f':
             input_path = optarg;
