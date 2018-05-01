@@ -2,7 +2,7 @@
 
 #include <stdlib.h> // abort
 #include <string.h> // memcpy
-#include <unistd.h> // usleep
+//#include <unistd.h> // usleep
 
 #include "packet_parser.h"
 #include "project2_tasks.h"
@@ -10,7 +10,7 @@
 // pthread
 void *tiva_packet_parsing_task(void* ptr)
 {
-    bbb_packet_parsing_task_params_t *param = (bbb_packet_parsing_task_params_t *)ptr;
+    //bbb_packet_parsing_task_params_t *param = (bbb_packet_parsing_task_params_t *)ptr;
 
     // Assume UART is already configured
 
@@ -22,7 +22,7 @@ void *tiva_packet_parsing_task(void* ptr)
 
     // call packet parsing function, which runs forever
     packet_parser(buffer, BUF_SIZE,
-                  uart_read_wrapper_callback, NULL,
+                  tiva_uart_read_wrapper_callback, NULL,
                   tiva_packet_handler_callback, NULL);
 
     return NULL;
@@ -35,7 +35,7 @@ size_t tiva_uart_read_wrapper_callback(void *buffer, size_t len, void *additiona
 
 void tiva_uart_write_wrapper_callback(void *buffer, size_t len, void *additional_params)
 {
-    size_t uart_send_n(buffer, len);
+    uart_send_n(buffer, len);
 }
 
 void tiva_packet_handler_callback(packet_data_t *packet, void* additional_params)
@@ -65,7 +65,7 @@ void tiva_packet_handler_callback(packet_data_t *packet, void* additional_params
     case PID_PARAMETERS:
     {
         // Copy to tiva global
-        memcpy(&g_pid_params, &packet->pid_param, sizeof(pid_param));
+        memcpy(&g_pid_params, &packet->pid_param, sizeof(g_pid_params));
         //printf("wrote pid param, kp %f\n", pid_param.kp);
         break;
     }

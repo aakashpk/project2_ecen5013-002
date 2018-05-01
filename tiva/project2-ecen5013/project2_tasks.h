@@ -28,13 +28,13 @@
 #include "utils/uartstdio.h"
 
 // Time between logs in ms
-#define LOG_INTERVAL 500
+//#define LOG_INTERVAL 500
 
 #define CURRENT_READ_INTERVAL 500
 
-#define HEARTBEAT_INTERVAL 1000
+#define HEARTBEAT_INTERVAL 500
 
-#define MOTOR_CALC_INTERVAL 500
+#define MOTOR_CALC_INTERVAL 200
 
 //*****************************************************************************
 //
@@ -43,37 +43,37 @@
 //*****************************************************************************
 
 /**
- * @brief 
- * 
- * @return uint32_t 
+ * @brief
+ *
+ * @return uint32_t
  */
 uint32_t motor_task_create(void);
 
 /**
- * @brief 
- * 
- * @return uint32_t 
+ * @brief
+ *
+ * @return uint32_t
  */
 uint32_t speed_measure_task_create(void);
 
 /**
- * @brief 
- * 
- * @return uint32_t 
+ * @brief
+ *
+ * @return uint32_t
  */
 uint32_t current_measure_task_create(void);
 
 /**
- * @brief 
- * 
- * @return uint32_t 
+ * @brief
+ *
+ * @return uint32_t
  */
 uint32_t logger_task_create(void);
 
 /**
- * @brief 
- * 
- * @return uint32_t 
+ * @brief
+ *
+ * @return uint32_t
  */
 uint32_t log_receive_task_create(void);
 

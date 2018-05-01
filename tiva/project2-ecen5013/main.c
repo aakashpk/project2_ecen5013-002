@@ -81,7 +81,7 @@ int main(void)
     adc_init();
     quad_encoder_init();
     pwm_init();
-    tachometer_init();
+    //tachometer_init();
 
     //UARTprintf("\n %d \n",GPIOIntStatus(GPIO_PORTP_BASE,true));
 

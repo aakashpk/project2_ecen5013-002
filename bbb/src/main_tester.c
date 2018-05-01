@@ -11,31 +11,27 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-/*
-#include <stdint.h>
-#include <assert.h>
-#include <limits.h>
-#include <fcntl.h>
-*/
-
-//#include "packet_data_type.h"
 
 #include "data_gen.h"
-//#include "packet_parser.h"
 #include "bbb_packet_handling.h"
 
-
-
-int main(void)
+int main(int argc, char **argv)
 {
     printf("starting\n");
 
     char* input_path = "combo_structs";
     char* output_dirfile_path = "demo_dir";
 
+    // Override input path
+    if (argc > 1)
+    {
+        input_path = argv[1];
+        printf("input path changed to %s\n", input_path);
+    }
+
     int retval; // pthread_create return value
 
-#define GEN_ENABLE 1
+#define GEN_ENABLE 0
 #define GEN_BLOCK 0
 #if GEN_ENABLE
     // datagen for testing
@@ -71,6 +67,7 @@ int main(void)
         printf("pthread create issue %s\n", strerror(retval));
         abort();
     }
+    printf("past pthread create\n");
 
     // Todo - task to setup ncurses UI in this or separate task, and write commands back to source of structs stream
     // Printf logs need to be replaced with log to file. Will need to pass this path into tasks.
@@ -78,6 +75,9 @@ int main(void)
 #if GEN_ENABLE
     pthread_join(datagen_thread, NULL);
 #endif
+
+    pthread_join(bbb_packet_parsing_thread, NULL);
+    printf("exiting\n");
 
     return 0;
 }

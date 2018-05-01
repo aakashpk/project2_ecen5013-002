@@ -7,6 +7,11 @@
 #include "packet_parser.h"
 #include "file_helper.h" // fopen_check
 
+// regular open
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 #define IO_SCHEME FILE
 // pthread
 void *bbb_packet_parsing_task(void* ptr)
@@ -14,8 +19,16 @@ void *bbb_packet_parsing_task(void* ptr)
     bbb_packet_parsing_task_params_t *param = (bbb_packet_parsing_task_params_t *)ptr;
 
 #if (IO_SCHEME == FILE)
+
+    int input_fd = open(param->input_path, O_RDONLY);
+
+#if 0
     // Open input file
     FILE *input_fp = fopen_check(param->input_path, "r");
+    // Disable buffering
+    setvbuf(input_fp, NULL, _IONBF, 0);
+#endif
+
 #elif (IO_SCHEME == UART)
 
 #if (PLATFORM == HOST)
@@ -37,7 +50,8 @@ void *bbb_packet_parsing_task(void* ptr)
 
     // Prepare additional callback params
     file_wrapper_params_t file_wrapper_params;
-    file_wrapper_params.fp = input_fp;
+    //file_wrapper_params.fp = input_fp;
+    file_wrapper_params.fd = input_fd;
 
     bbb_packet_handler_params_t bbb_packet_handler_params;
     bbb_packet_handler_params.dirfile_handles = &dirfile_handles;
@@ -48,7 +62,9 @@ void *bbb_packet_parsing_task(void* ptr)
                   bbb_packet_handler_callback, &bbb_packet_handler_params);
 
     // packet parser somehow returned, so should probably close files
-    fclose(input_fp);
+
+    close(input_fd);
+    //fclose(input_fp);
 
 
     close_dirfile(&dirfile_handles);
@@ -59,7 +75,8 @@ void *bbb_packet_parsing_task(void* ptr)
 size_t fread_wrapper_callback(void *buffer, size_t len, void *additional_params)
 {
     file_wrapper_params_t *param = (file_wrapper_params_t*)additional_params;
-    size_t bytes_read = fread(buffer, 1, len, param->fp);
+    //size_t bytes_read = fread(buffer, 1, len, param->fp);
+    size_t bytes_read = read(param->fd, buffer, len);
 
     if (bytes_read == -1)
     {

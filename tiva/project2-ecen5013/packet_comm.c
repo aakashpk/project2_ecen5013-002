@@ -11,7 +11,7 @@
 #include "packet_comm.h"
 
 #include "tiva_packet_handling.h"
-#include "tiva_packet_writer.h"
+#include "packet_writer.h"
 
 
 #ifdef USEUART
@@ -67,7 +67,7 @@ int packet_send(packet_type_t type, packet_data_t * packet)
     switch(comm_hw_used)
     {
         case UART:
-            write_packet(packet, tiva_uart_write, NULL, NULL);
+            write_packet(packet, tiva_uart_write_wrapper_callback, NULL, NULL);
             //uart_send_n((void *)packet,length);
             break;
         case TCP:

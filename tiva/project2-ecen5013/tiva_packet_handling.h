@@ -1,7 +1,6 @@
 #pragma once
 
 #include "packet_data_type.h"
-#include "dirfile_writer.h"
 
 typedef struct
 {

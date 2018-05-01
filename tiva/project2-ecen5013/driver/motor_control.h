@@ -21,8 +21,8 @@
 //PID library from https://github.com/mblythe86/C-PID-Library
 #include "pid.h"
 
-#define KP_DEFAULT_VAL 1
-#define KI_DEFAULT_VAL 0
+#define KP_DEFAULT_VAL 5
+#define KI_DEFAULT_VAL 1
 #define KD_DEFAULT_VAL 0
 
 #define OUPUT_MIN_VAL 20
@@ -34,34 +34,34 @@ extern PidType g_pid_values; // from PID library
 
 /**
  * @brief Initialize motor PWM
- * 
+ *
  */
 void pwm_init(void);
 
 /**
- * @brief write pwm duty cycle to motor 
- * 
- * @param duty_cycle 
+ * @brief write pwm duty cycle to motor
+ *
+ * @param duty_cycle
  */
 void motor_speed(uint32_t duty_cycle);
 
 /**
- * @brief Initialize PID 
- * 
+ * @brief Initialize PID
+ *
  */
 void Init_PID(void);
 
 /**
  * @brief Coumputes pid output values
- * 
- * @return uint32_t 
+ *
+ * @return uint32_t
  */
 uint32_t PID_compute_output(void);
 
 /**
  * @brief test function for PWM
- * 
- * @param value 
+ *
+ * @param value
  */
 void led_bright(uint8_t value); // testing function
 

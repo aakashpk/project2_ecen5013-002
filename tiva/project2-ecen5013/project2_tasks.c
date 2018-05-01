@@ -7,6 +7,7 @@
  * @date 2018-04-29
  */
 #include "project2_tasks.h"
+#include "tiva_packet_handling.h"
 
 #define TASKSTACKSIZE   1024         // Stack size in words 128
 
@@ -77,7 +78,7 @@ static void motor_task(void *pvParameters)
 
     Init_PID();
 
-    gMotorValues.setpoint=50;
+    gMotorValues.setpoint=20;
 
     TimerHandle_t xMotor_timer;
     xMotor_timer = xTimerCreate("Logger_Timer",pdMS_TO_TICKS(MOTOR_CALC_INTERVAL),
@@ -95,7 +96,7 @@ static void motor_task(void *pvParameters)
 
         motor_speed(duty_cycle);
 
-        UARTprintf("[LOG] PWM duty cycle %d",duty_cycle);
+        UARTprintf("[LOG] PWM duty cycle %d\n",duty_cycle);
 
         //sprintf (fstring, "%f", gMotorValues.setpoint);
         //UARTprintf(" %s\n", fstring);
@@ -160,8 +161,8 @@ static void logger_task(void *pvParameters)
     TimerHandle_t xLog_timer,xHeartBeat_timer;
 
     //Create timers for heartbeat and normal logging
-    xLog_timer = xTimerCreate("Logger_Timer",pdMS_TO_TICKS(LOG_INTERVAL),
-                              pdTRUE,(void *) 0,logger_timer_callback);
+    //xLog_timer = xTimerCreate("Logger_Timer",pdMS_TO_TICKS(LOG_INTERVAL),
+    //                          pdTRUE,(void *) 0,logger_timer_callback);
 
     xHeartBeat_timer = xTimerCreate("Logger_Timer",pdMS_TO_TICKS(HEARTBEAT_INTERVAL),
                                     pdTRUE,(void *) 0,heartbeat_timer_callback);
@@ -177,13 +178,14 @@ static void logger_task(void *pvParameters)
 
         if(event == HEARTBEAT_NOTIFY)
         {
-            write_packet(&dataPacket, tiva_uart_write, NULL, NULL);
-            //packet_send(COMM_HEARTBEAT,&dataPacket);
+            // Too early to write packet
+            //write_packet(&dataPacket, tiva_uart_write_wrapper_callback, NULL, NULL);
+            packet_send(COMM_HEARTBEAT,&dataPacket);
         }
         else if(event == LOG_NOTIFY)
         {
-            write_packet(&dataPacket, tiva_uart_write, NULL, NULL);
-            //packet_send(MOTOR_VALUES,&dataPacket);
+            //write_packet(&dataPacket, tiva_uart_write_wrapper_callback, NULL, NULL);
+            packet_send(MOTOR_VALUES,&dataPacket);
 
         }
         else UARTprintf("[WARN] Unknown task notification\n");

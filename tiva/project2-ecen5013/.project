@@ -36,6 +36,11 @@
 			<locationURI>PARENT-2-PROJECT_LOC/common/src/packet_data_type.c</locationURI>
 		</link>
 		<link>
+			<name>common_src/packet_parser.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/common/src/packet_parser.c</locationURI>
+		</link>
+		<link>
 			<name>common_src/packet_writer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/common/src/packet_writer.c</locationURI>

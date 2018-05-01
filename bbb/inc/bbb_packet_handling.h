@@ -14,6 +14,7 @@ void *bbb_packet_parsing_task(void* ptr);
 typedef struct
 {
     FILE* fp;
+    int fd;
 } file_wrapper_params_t;
 
 size_t fread_wrapper_callback(void *buffer, size_t len, void *additional_params);

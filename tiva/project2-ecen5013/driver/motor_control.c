@@ -55,7 +55,7 @@ void pwm_init(void)
     PWMClockSet(PWM0_BASE,PWM_SYSCLK_DIV_8);
     // 15khz PWM with the value of 1000
     // and 1khz with 15000
-    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, 1000);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, 15000);
 
     //
     // Set the pulse width of PWM0 for a 25% duty cycle.
