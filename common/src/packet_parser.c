@@ -1,6 +1,13 @@
 #include "packet_parser.h"
+
+#include <stdio.h> // perror
+#include <stdlib.h> // abort
+#include <string.h> // memmove
+
+#include "utilities.h" // get_checksum
+
+/*
 #include "dirfile_writer.h"
-#include "utilities.h"
 #include "data_output.h"
 #include "file_helper.h"
 
@@ -9,52 +16,29 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+*/
 
 // Todo - this should be callback based for most flexibility and reuse among platforms
 
-void *packet_parser_task(void* ptr)
+// Todo - check if function pointer type enforces safety - try registering an incompatible callback
+
+
+// This should run forever
+void packet_parser(uint8_t *buffer,
+                   size_t buffer_size,
+                   read_callback_t read_callback,
+                   void *read_params,
+                   packet_handler_callback_t packet_handler_callback,
+                   void *packet_handler_params)
 {
-    packet_parser_params_t *param = (packet_parser_params_t *)ptr;
-
-/*
-    // Not ready for this yet
-    data_output_t output; // should actually be input
-    output.current_output_mode = OUTPUT_TO_FILE;
-*/
-
-    //data_ouput_open()
-    //size_t data_output_read(data_output_t *output, char* data, size_t len);
-
-    // try with fopen check first
-    FILE *input_fp = fopen_check(param->input_path, "r");
-
-/*
-    // Todo - convert open() and read() to support all modes (serial and socket)
-    int input_fd;
-    if (-1 == (input_fd = open(param->input_path, O_RDONLY)))
-    {
-        perror("error opening file");
-        abort();
-    }
-*/
-
-    // Open dirfile output
-    dir_handles_t dir_handles;
-    create_dirfile(&dir_handles, param->output_dir);
-
-    // Don't put this large buffer on stack
-    //static const size_t RX_BUF_SIZE = 1 << 12; //4kB
-    #define RX_BUF_SIZE (1 << 12) //4kB
-    static unsigned char rx_buf[RX_BUF_SIZE];
-
     size_t bytes_read;
     size_t rx_buf_bytes = 0;
     // Read() is blocking
-    // Zero bytes read means eof / pipe closed by writer
+    // Zero bytes read means eof / closed by writer
     // Appends to partially filled buffer to account for partial packet writes / reads
-    //while ((bytes_read = read(input_fd, rx_buf + rx_buf_bytes, RX_BUF_SIZE - rx_buf_bytes)))
-    //fread(ptr, size, n, stream)
-    while ((bytes_read = fread(rx_buf + rx_buf_bytes, 1, RX_BUF_SIZE - rx_buf_bytes, input_fp)))
+    while ((bytes_read = read_callback(buffer + rx_buf_bytes,      // where to read
+                                       buffer_size - rx_buf_bytes, // maximum number of bytes to read
+                                       read_params)))              // additional parameters necessary to read (file descriptor, etc.)
     {
         if (bytes_read == -1)
         {
@@ -76,7 +60,7 @@ void *packet_parser_task(void* ptr)
                (sizeof(magic_num) + sizeof(packet_header_t)))
         {
             // Check for magic number
-            if (magic_num != *(uint32_t*)(rx_buf + bytes_consumed))
+            if (magic_num != *(uint32_t*)(buffer + bytes_consumed))
             {
                 if (!out_of_sync)
                 {
@@ -101,7 +85,7 @@ void *packet_parser_task(void* ptr)
             bytes_remaining -= sizeof(magic_num);
 
 
-            packet_data_t *packet = (packet_data_t*)(rx_buf + bytes_consumed);
+            packet_data_t *packet = (packet_data_t*)(buffer + bytes_consumed);
             packet_type_t packet_type = packet->header.packet_type;
 
             // error check for correct packet type
@@ -140,7 +124,7 @@ void *packet_parser_task(void* ptr)
             checksum = get_checksum((uint8_t*)&packet->header, sizeof(packet->header), 0);
             checksum = get_checksum((uint8_t*)&packet->payload, packet_payload_size[packet_type], checksum);
 
-            uint8_t embedded_checksum = *(uint8_t*)(rx_buf + bytes_consumed + required_packet_size - sizeof(checksum));
+            uint8_t embedded_checksum = *(uint8_t*)(buffer + bytes_consumed + required_packet_size - sizeof(checksum));
             if (checksum != embedded_checksum)
             {
                 // out of sync
@@ -150,67 +134,8 @@ void *packet_parser_task(void* ptr)
                 continue;
             }
 
-            // Persistent local copies
-            static motor_values_t motor_values = {0}; // This struct not necessary with current implementation
-            static pid_param_t pid_param = {0};
-            static pid_config_t pid_config = {0};
-
-            switch (packet_type)
-            {
-                default:
-                {
-                    printf("lost sync (packet type %u uninitialized or invalid)", packet_type);
-                    out_of_sync = true;
-                    continue;
-                    break;
-                }
-                case COMM_HEARTBEAT:
-                {
-                    printf("got heartbeat, timestamp %u\n", packet->header.timestamp);
-                    bytes_consumed += required_packet_size;
-                    break;
-                }
-                case PID_CONFIGUARTION:
-                {
-                    memcpy(&pid_config, &packet->pid_config, sizeof(pid_config));
-
-                    printf("wrote pid config, windup_limit %f\n", pid_config.windup_limit);
-
-                    bytes_consumed += required_packet_size;
-                    break;
-                }
-                case PID_PARAMETERS:
-                {
-                    memcpy(&pid_param, &packet->pid_param, sizeof(pid_param));
-
-                    printf("wrote pid param, kp %f\n", pid_param.kp);
-
-                    bytes_consumed += required_packet_size;
-                    break;
-                }
-                case MOTOR_VALUES:
-                {
-                    // This memcpy is redundant, but enables some flexibility
-                    memcpy(&motor_values, &packet->motor_values, sizeof(motor_values));
-
-                    printf("wrote motor values, speed %f\n", motor_values.speed);
-
-                    bytes_consumed += required_packet_size;
-
-                    // Todo - how to deal with synchronizing data across files?
-                    // Simple solution is to just do all writes in here.
-                    // This is one of the non-ideal aspects of dirfile timeseries, which wouldn't be an issue in custom plotter
-                    // Must write within packet processing loop to handle multipe incoming motor packets per read cycle.
-
-                    // Last parameter is flush interval
-                    write_dirfile_entry(&dir_handles, &motor_values, &pid_param, &pid_config, 10);
-
-                    // To simulate continuous file read while debugging
-                    usleep(1E4);
-
-                    break;
-                }
-            }
+            packet_handler_callback(packet, packet_handler_params);
+            bytes_consumed += required_packet_size;
         }
 
         // Eliminate consumed bytes
@@ -219,16 +144,9 @@ void *packet_parser_task(void* ptr)
         // Shift remaining bytes to beginning of buffer if necessary
         if (rx_buf_bytes)
         {
-            memmove(rx_buf, rx_buf + bytes_consumed, rx_buf_bytes);
+            memmove(buffer, buffer + bytes_consumed, rx_buf_bytes);
         }
     }
 
-    printf("read zero bytes (EOF) - main loop exiting\n");
-
-    //close(input_fd);
-    fclose(input_fp);
-
-    close_dirfile(&dir_handles);
-
-    return NULL;
+    printf("read zero bytes (EOF) - packet_parser exiting\n");
 }

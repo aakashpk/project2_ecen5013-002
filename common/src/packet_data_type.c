@@ -4,7 +4,9 @@
 // may be able to just put const in header
 
 // extern (implicit with const)
-const uint32_t magic_num = 0xFEEDCAFE;
+//const uint32_t magic_num = 0xFEEDCAFE;
+// const having conflicts with non const write wrappers. non-const is faster fix
+uint32_t magic_num = 0xFEEDCAFE;
 
 const size_t packet_payload_size[] = {
     [UNINITIALISED] = 0,

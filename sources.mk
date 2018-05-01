@@ -4,6 +4,7 @@ MAIN_SOURCE=bbb/src/main_tester.c
 
 COMMON_SOURCES= \
 			bbb/src/dirfile_writer.c \
+			bbb/src/bbb_packet_handling.c \
 			common/src/data_gen.c \
 			common/src/data_output.c \
 			common/src/file_helper.c \

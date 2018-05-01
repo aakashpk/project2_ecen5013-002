@@ -1,6 +1,6 @@
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @file main_tester.c
  * @author Aakash
  * @author Miles
@@ -21,8 +21,8 @@
 //#include "packet_data_type.h"
 
 #include "data_gen.h"
-#include "packet_parser.h"
-
+//#include "packet_parser.h"
+#include "bbb_packet_handling.h"
 
 
 
@@ -31,7 +31,7 @@ int main(void)
     printf("starting\n");
 
     char* input_path = "combo_structs";
-    char* dirfile_output_path = "demo_dir";
+    char* output_dirfile_path = "demo_dir";
 
     int retval; // pthread_create return value
 
@@ -60,13 +60,13 @@ int main(void)
 #endif // GEN_ENABLE
 
     // Todo - call packet parser function/task
-    pthread_t packet_parser_thread;
+    pthread_t bbb_packet_parsing_thread;
 
-    packet_parser_params_t packet_parser_param;
-    packet_parser_param.input_path = input_path;
-    packet_parser_param.output_dir = dirfile_output_path;
+    bbb_packet_parsing_task_params_t packet_parsing_task_params;
+    packet_parsing_task_params.input_path = input_path;
+    packet_parsing_task_params.output_dirfile_path = output_dirfile_path;
 
-    if ((retval = pthread_create(&packet_parser_thread, NULL, packet_parser_task, (void *)&packet_parser_param)))
+    if ((retval = pthread_create(&bbb_packet_parsing_thread, NULL, bbb_packet_parsing_task, (void *)&packet_parsing_task_params)))
     {
         printf("pthread create issue %s\n", strerror(retval));
         abort();

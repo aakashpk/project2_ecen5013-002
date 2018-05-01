@@ -8,14 +8,16 @@
 
 #pragma once
 
-#include "dirfile_writer.h"
+#include "packet_data_type.h"
+//#include <stddef.h> // size_t
 
-typedef struct
-{
-    char* input_path;
-    char* output_dir;
-    // Todo - should configure read mode
-    // hopefully output through same interface is independent - should be allowed
-} packet_parser_params_t;
+typedef size_t (*read_callback_t)(void *buffer, size_t len, void *additional_params);
 
-void *packet_parser_task(void* ptr);
+typedef void (*packet_handler_callback_t)(packet_data_t *packet, void* additional_params);
+
+void packet_parser(uint8_t *buffer,
+                   size_t buffer_size,
+                   read_callback_t read_callback,
+                   void *read_params,
+                   packet_handler_callback_t packet_handler_callback,
+                   void *packet_handler_params);

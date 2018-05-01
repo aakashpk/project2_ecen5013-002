@@ -1,4 +1,7 @@
 {
+    "files.exclude": {
+        "**/*.o": true
+    },
     "files.associations": {
         "getdata.h": "c",
         "packet_data_type.h": "c",
@@ -10,6 +13,7 @@
         "packet_parser.h": "c",
         "fcntl.h": "c",
         "stdlib.h": "c",
-        "serial.h": "c"
+        "serial.h": "c",
+        "bbb_packet_handling.h": "c"
     }
 }

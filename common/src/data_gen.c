@@ -7,19 +7,16 @@
  * @date 2018-04-29
  */
 #include "packet_writer.h"
+#include "bbb_packet_handling.h"
+#include "file_helper.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <limits.h>
 
 void *datagen_task(void *ptr)
 {
-    data_output_t output;
-
-    // Todo - can make data_output interactions even safer.
-    // eg, auto close previous when attempting to open another output.
-    output.current_output_mode = OUTPUT_TO_FILE;
-
-    data_output_open(&output, (char*)ptr);
+    file_wrapper_params_t file_wrapper_params;
+    file_wrapper_params.fp = fopen_check((char*)ptr, "w");
 
     packet_data_t packet;
     //packet_header_t header;
@@ -57,7 +54,7 @@ void *datagen_task(void *ptr)
             packet.motor_values.i_value = 5 + base + offset;
             packet.motor_values.d_value = 6 + base + offset;
 
-            write_packet(&output, &packet);
+            write_packet(&packet, fwrite_wrapper_callback, fflush_wrapper_callback, &file_wrapper_params);
         }
 
         if (!(count % 10)) // slower update based on reconfig
@@ -69,7 +66,7 @@ void *datagen_task(void *ptr)
             packet.pid_param.ki = 8 + base + offset;
             packet.pid_param.kd = 9 + base + offset;
 
-            write_packet(&output, &packet);
+            write_packet(&packet, fwrite_wrapper_callback, fflush_wrapper_callback, &file_wrapper_params);
         }
 
         if (!(count % 100)) // usually very slow update
@@ -81,14 +78,14 @@ void *datagen_task(void *ptr)
             packet.pid_config.update_period_ns = 11 + base + offset;
             packet.pid_config.windup_limit = 12 + base + offset;
 
-            write_packet(&output, &packet);
+            write_packet(&packet, fwrite_wrapper_callback, fflush_wrapper_callback, &file_wrapper_params);
             printf("datagen wrote config values\n");
         }
 
         usleep(1E4); // sleep 10ms
     }
 
-    data_output_close(&output);
+    fclose(file_wrapper_params.fp);
 
     return NULL;
 }

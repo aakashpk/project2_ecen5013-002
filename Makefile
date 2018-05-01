@@ -16,9 +16,10 @@ CFLAGS=-std=$(CSTD)\
 	-lpthread\
 	-Wall\
 	-lm\
-	-g
-#	-O0\
-#	-Werror
+	-g\
+	-O0\
+	-Wfatal-errors\
+	-Werror
 
 MOCKED_FUNCTIONS=read_reg_temp\
 	read_reg_light_word
@@ -95,4 +96,3 @@ and runs them
 clean:
 	rm -f bbb/src/*.o bbb/test/*.o common/src/*.o
 	rm -f $(TEST_TARGETS) $(TARGET) client
-

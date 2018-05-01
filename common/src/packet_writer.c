@@ -1,20 +1,26 @@
 #include "packet_writer.h"
 #include "utilities.h"
 
-void write_packet(data_output_t *output, packet_data_t *data)
+void write_packet(packet_data_t *data,
+                  write_callback_t write_callback,
+                  flush_callback_t flush_callback,
+                  void* additional_write_flush_params)
 {
     size_t payload_len = packet_payload_size[data->header.packet_type];
 
-    data_output_write(output, (char*)&magic_num, sizeof(magic_num));
-    data_output_write(output, (char*)&data->header, sizeof(data->header));
-    data_output_write(output, (char*)&data->payload, payload_len);
+    write_callback(&magic_num, sizeof(magic_num), additional_write_flush_params);
+    write_callback(&data->header, sizeof(data->header), additional_write_flush_params);
+    write_callback(&data->payload, payload_len, additional_write_flush_params);
 
     uint8_t checksum = 0;
     checksum = get_checksum((uint8_t*)&data->header, sizeof(data->header), checksum);
     checksum = get_checksum((uint8_t*)&data->motor_values, payload_len, checksum);
-    data_output_write(output, (char*)&checksum, sizeof(checksum));
+    write_callback(&checksum, sizeof(checksum), additional_write_flush_params);
 
     // Todo - may want to let flush be optional here,
     // or with reduced flush rate
-    data_output_flush(output);
+    if (flush_callback)
+    {
+        flush_callback(additional_write_flush_params);
+    }
 }

@@ -8,6 +8,12 @@
 #pragma once
 
 #include "packet_data_type.h"
-#include "data_output.h"
 
-void write_packet(data_output_t *output, packet_data_t *data);
+typedef void (*write_callback_t)(void *buffer, size_t len, void *additional_params);
+
+typedef void (*flush_callback_t)(void *additional_params);
+
+void write_packet(packet_data_t *data,
+                  write_callback_t write_callback,
+                  flush_callback_t flush_callback,
+                  void* additional_write_flush_params);

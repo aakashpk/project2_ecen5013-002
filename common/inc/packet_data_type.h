@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <stddef.h>
+#include <stddef.h> // size_t
 
 typedef enum {
     UNINITIALISED,
@@ -84,7 +84,8 @@ typedef struct
 } packet_data_t;
 
 // extern (implicit with const)
-extern const uint32_t magic_num;
+//extern const uint32_t magic_num;
+extern uint32_t magic_num; // non-const workaround to support wrapped fwrite
 
 // remove stddef above if this needs to move
 extern const size_t packet_payload_size[NUM_PACKET_TYPES];

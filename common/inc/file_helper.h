@@ -20,7 +20,7 @@
  * @param len bytes to write
  * @param force_flush whether to force a flush
  */
-static inline void fwrite_flush(FILE *fp, void *data, size_t len, bool force_flush)
+static inline void fwrite_flush(FILE *fp, const void *data, size_t len, bool force_flush)
 {
     assert(1 == fwrite(data, len, 1, fp));
 
