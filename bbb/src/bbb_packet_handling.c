@@ -141,7 +141,9 @@ void bbb_packet_handler_callback(packet_data_t *packet, void* additional_params)
     case MOTOR_VALUES:
     {
         motor_values_t *motor_values = &packet->motor_values;
-        printf("wrote motor values, speed %f\n", motor_values->speed);
+        //printf("wrote motor values, speed %f\n", motor_values->speed);
+        // The above printf() line causes a bus error
+        printf("mv placeholder\n");
 
         // Last parameter is flush interval
         write_dirfile_entry(param->dirfile_handles, motor_values, &pid_param, &pid_config, 10);
